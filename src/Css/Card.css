@@ -1,0 +1,31 @@
+.card {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  /* border: 1px solid black; */
+  width: 200px;
+  height: 200px;
+  cursor: pointer;
+  padding: 10px 0px;
+  transition: background-color 300ms ease-in;
+  box-shadow: rgba(0, 0, 0, 0.15) 0px 5px 15px 0px;
+  margin: 5px;
+}
+.card > img {
+  width: 200px;
+  height: 150px;
+  object-fit: contain;
+  position: relative;
+  /* z-index: 1; */
+}
+.card > span {
+  /* position: absolute; */
+  color: rgba(17, 17, 17, 0.507);
+  font-size: medium;
+  margin: 10px;
+  /* z-index: 2; */
+}
+.card:hover {
+  background-color: rgba(0, 255, 242, 0.082);
+}

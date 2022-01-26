@@ -1,37 +1,53 @@
 import React, { useRef } from "react";
 import { LoginUser } from "../../API/User";
-import "../../ComponentsCss/registration.css";
+import "../../Css/registration.css";
 import { isValidMailId } from "../../Validation/MailValidation";
-
+import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-
+import { useDataLayerValue } from "../../DataLayer";
+import { actions } from "../../Reducer/action";
+import { IMAGE } from "../../API/ImageLink";
 // Login [Sign In]
 export default function Login() {
   const mail = useRef("");
   const password = useRef("");
+  const [, dispatch] = useDataLayerValue();
 
+  const navigation = useNavigate();
   const handelSubmit = async (e) => {
     e.preventDefault();
-    if (
-      isValidMailId(String(mail.current.value)) === null ||
-      String(password.current.value).length < 6
-    ) {
+    if (isValidMailId(String(mail.current.value)) === null) {
       toast.error("Invalid Credentials");
       return;
     }
+
     let data = {
-      mailId: mail.current.value,
+      mailId: String(mail.current.value).toLowerCase(),
       password: password.current.value,
     };
     let response = await LoginUser(data);
-    let result = await response.json();
-
-    console.log(result);
-    console.log(result.message);
-    result.success
-      ? toast.success(result.message)
-      : toast.error(result.message);
+    if (response.status !== 500) {
+      let result = await response.json();
+      if (response.status === 200) {
+        dispatch({
+          type: actions.SET_TOKEN,
+          token: result.token,
+        });
+        dispatch({
+          type: actions.SET_USER,
+          user: {
+            name: result.userName,
+            mailId: mail.current.value,
+          },
+        });
+        navigation("/");
+      } else {
+        toast.error(result.message);
+      }
+    } else {
+      toast.error("Something is wrong");
+    }
   };
   return (
     <div className="Login">
@@ -74,10 +90,7 @@ export default function Login() {
           </div>
         </div>
         <div className="img">
-          <img
-            src="https://drive.google.com/uc?export=view&id=1CazG8Gh2zBwT5ZcV5K5ggZaLeDd8JYN3"
-            alt="Shop"
-          />
+          <img src={IMAGE + "1CazG8Gh2zBwT5ZcV5K5ggZaLeDd8JYN3"} alt="Shop" />
         </div>
       </div>
     </div>

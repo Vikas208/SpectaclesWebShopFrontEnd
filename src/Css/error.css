@@ -1,0 +1,25 @@
+.errorPage {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  overflow: hidden;
+  cursor: pointer;
+  user-select: none;
+}
+
+.errorPage > img {
+  object-fit: contain;
+  width: 30vw;
+  height: 30vh;
+}
+
+.errorPage > span {
+  font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande",
+    "Lucida Sans", Arial, sans-serif;
+  font-weight: 400;
+  font-size: 4vmin;
+  margin-top: 20px;
+}

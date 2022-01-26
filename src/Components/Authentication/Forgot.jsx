@@ -1,10 +1,11 @@
 import React, { useRef, useState } from "react";
-import "../../ComponentsCss/registration.css";
+import "../../Css/registration.css";
 import { isValidMailId } from "../../Validation/MailValidation";
 import { GenerateOtp } from "../../API/Otp";
 import { ResetPassword } from "../../API/User";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { IMAGE } from "../../API/ImageLink";
 function Forgot() {
   const mail = useRef("");
   const otp = useRef("");
@@ -22,26 +23,24 @@ function Forgot() {
       toast.error("Invalid Credentials");
       return;
     }
+
     mail.current.disabled = true;
-    e.target.disabled = true;
     otp.current.disabled = false;
+    e.target.disabled = true;
+
     let mailId = String(mail.current.value).toLowerCase();
     let response = await GenerateOtp(mailId, "forgotPassword");
-    let data = await response.json();
-    // console.log(data);
-    if (data.otp !== undefined && data.otp !== null) {
-      setOtp({ otp: data.otp, time: data.otpTime });
-      toast.success("Mail Sent On Your Mail Id");
-    } else if (data.message !== undefined && data.message !== "") {
-      toast.error(data.message);
-      e.target.disabled = false;
-      mail.current.disabled = false;
-      otp.current.disabled = true;
+
+    if (response.status !== 500) {
+      let data = await response.json();
+      if (response.status === 200) {
+        setOtp({ otp: data.otp, time: data.otpTime });
+        toast.success("Mail Sent On Your Mail Id");
+      } else {
+        toast.error(data.message);
+      }
     } else {
-      toast.error("Mail Not Send");
-      e.target.disabled = false;
-      mail.current.disabled = false;
-      otp.current.disabled = true;
+      toast.error("Something is Wrong");
     }
   };
   const hadelSubmit = (e) => {
@@ -50,10 +49,9 @@ function Forgot() {
     if (otp.current.value === "" || otpData.opt === " ") {
       toast.warning("Please Verify Your Mail Id");
       return;
-    } else if (
-      otp.current.value === otpData.otp &&
-      new Date(Date.now()) <= new Date(Number(otpData.time) + 300000)
-    ) {
+    } else if (new Date(Date.now()) > new Date(Number(otpData.time) + 300000)) {
+      toast.warn("Otp is Expired");
+    } else if (otp.current.value === otpData.otp) {
       setReset(true);
     } else {
       toast.error("Something gone Wrong Try Again Later");
@@ -62,10 +60,7 @@ function Forgot() {
 
   const handelReset = async (e) => {
     e.preventDefault();
-    if (
-      String(password.current.value).length < 6 ||
-      password.current.value !== cpassword.current.value
-    ) {
+    if (password.current.value !== cpassword.current.value) {
       toast.error("Invalid Credentials");
       return;
     }
@@ -74,11 +69,15 @@ function Forgot() {
       password: password.current.value,
     };
     let response = await ResetPassword(data);
-    let result = await response.json();
-    // console.log(result);
-    result.success
-      ? toast.success(result.message)
-      : toast.error(result.message);
+    if (response.status !== 500) {
+      let result = await response.json();
+      // console.log(result);
+      result.success
+        ? toast.success(result.message)
+        : toast.error(result.message);
+    } else {
+      toast.error(response.message);
+    }
     navigate("/login");
   };
   return (
@@ -88,10 +87,7 @@ function Forgot() {
         style={{ boxShadow: "rgba(99, 99, 99, 0.2) 0px 2px 8px 0px" }}
       >
         <div className="img">
-          <img
-            src="https://drive.google.com/uc?export=view&id=1GyrmT30TwXgyr2Q8zwSjqEwQAJ_YyFfd"
-            alt="Forgot"
-          />
+          <img src={IMAGE + "1GyrmT30TwXgyr2Q8zwSjqEwQAJ_YyFfd"} alt="Forgot" />
         </div>
         <form className="form" onSubmit={hadelSubmit}>
           <input
@@ -138,6 +134,7 @@ function Forgot() {
               name="password"
               placeholder="Enter New Password"
               autoComplete="new-password"
+              minLength={6}
               required
               ref={password}
               onChange={() => {
@@ -151,6 +148,7 @@ function Forgot() {
               name="cpassword"
               placeholder="Enter Confirm Password"
               autoComplete="new-password"
+              minLength={6}
               required
               ref={cpassword}
               onChange={() => {

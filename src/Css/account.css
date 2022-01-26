@@ -1,0 +1,47 @@
+:root {
+  --min-height: 100vh;
+}
+.myAccount {
+  display: flex;
+  flex-wrap: wrap;
+  min-height: var(--min-height);
+  justify-content: center;
+  align-items: center;
+}
+
+.profile {
+  display: flex;
+  flex-direction: column;
+  min-height: var(--min-height);
+  position: relative;
+  width: 100%;
+}
+
+.profile_form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 30px;
+}
+.profile_form > input {
+  width: 60%;
+  padding: 15px;
+  font-size: 3vmin;
+  margin: 2px;
+  outline: none;
+  border: none;
+  border-bottom: 1px solid rgb(230, 230, 230);
+}
+
+.profile_form > button {
+  width: 60%;
+  padding: 10px;
+  border: none;
+  cursor: pointer;
+  font-size: 3vmin;
+  color: rgb(255, 253, 253);
+  font-weight: 500;
+  background-color: rgb(9, 58, 148);
+  border-radius: 2px;
+  margin-top: 10px;
+}

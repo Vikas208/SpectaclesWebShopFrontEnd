@@ -1,0 +1,6 @@
+export const actions = {
+  SET_TOKEN: "SET_TOKEN",
+  SET_USER: "SET_USER",
+  SET_SHOPDETAILS: "SET_SHOPDETAILS",
+  LOGOUT: "LOGOUT",
+};

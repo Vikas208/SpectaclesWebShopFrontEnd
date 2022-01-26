@@ -1,7 +1,7 @@
-export async function GenerateOtp(mailId, URL) {
+export async function LoadShopDetails() {
   let response = { status: 500 };
-  await fetch(`/api/user/${URL}?mail=${mailId}`, {
-    method: "POST",
+  await fetch("/api/loadDetails", {
+    method: "GET",
     headers: {
       Accept: "application/json",
       "content-type": "application/json",
@@ -9,7 +9,6 @@ export async function GenerateOtp(mailId, URL) {
   })
     .then((res) => {
       response = res;
-      console.log(response);
     })
     .catch((err) => {
       console.log(err);
