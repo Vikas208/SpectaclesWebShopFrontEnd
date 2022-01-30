@@ -2,12 +2,13 @@ import React, { useRef, useState } from "react";
 import { SaveUser } from "../../API/User";
 import { isValidMailId } from "../../Validation/MailValidation";
 import "../../Css/registration.css";
-import { GenerateOtp } from "../../API/Otp";
+import { GenerateOtp, ValidateOtp } from "../../API/Otp";
 import { toast } from "react-toastify";
 import { useDataLayerValue } from "../../DataLayer";
 import { actions } from "../../Reducer/action";
 import { useNavigate } from "react-router-dom";
-import { IMAGE } from "../../API/ImageLink";
+import { LOGINIMAGE } from "../../API/ImageLink";
+import Loader from "../MainComponents/Loader";
 // Register Component [Sign Up]
 
 export default function Register() {
@@ -17,10 +18,10 @@ export default function Register() {
   const name = useRef("");
   const otp = useRef("");
 
+  const [Loading, setLoading] = useState(false);
+
   const [, dispatch] = useDataLayerValue();
   const navigation = useNavigate();
-  // OTP
-  const [otpdata, setOtp] = useState({ otp: "", time: "" });
 
   // Generate OTP
   const handelOTP = async () => {
@@ -38,23 +39,16 @@ export default function Register() {
       toast.warning("Not valid Mail Id");
       return;
     }
-
     otp.current.disabled = false;
     document.getElementById("sendotpbutton").disabled = true;
 
     let mailId = String(mail.current.value).toLowerCase();
     let response = await GenerateOtp(mailId, "sendMail");
-    if (response.status !== 500) {
-      let data = await response.json();
-
-      if (response.status === 200) {
-        toast.success("Otp Sent On your Mail Id");
-        setOtp({ otp: data.otp, time: data.otpTime });
-      } else {
-        toast.error("Mail Not Sent Try Again");
-        otp.current.disabled = true;
-        document.getElementById("sendotpbutton").disabled = false;
-      }
+    if (response.status === 200) {
+      let result = await response.json();
+      result.success
+        ? toast.success(result.message)
+        : toast.error(result.message);
     } else {
       toast.error("Something is Wrong");
     }
@@ -64,53 +58,65 @@ export default function Register() {
 
     if (otp.current.value === "") {
       toast.warning("Verify Mail Id");
-    } else if (new Date(Date.now()) > new Date(Number(otpdata.time) + 300000)) {
-      toast.warning("Otp Expired");
-    } else if (cpassword.current.value !== password.current.value) {
-      toast.warning("Invalid Credentials");
-    } else if (otp.current.value === otpdata.otp) {
-      let user = {
-        mailId: String(mail.current.value).toLowerCase(),
-        name: name.current.value,
-        password: password.current.value,
-      };
+    }
 
-      let result = await SaveUser(user);
+    let response = await ValidateOtp(mail.current.value, otp.current.value);
 
-      if (result.status !== 500) {
-        let response = await result.json();
-        if (result.status === 200) {
-          if (response.success) {
-            dispatch({
-              type: actions.SET_TOKEN,
-              token: response.token,
-            });
-            dispatch({
-              type: actions.SET_USER,
-              user: {
-                id: null,
-                name: name.current.value,
-                mailId: mail.current.value,
-              },
-            });
-            navigation("/");
+    setLoading(true);
+    if (response.status === 200) {
+      let success = await response.json();
+
+      if (success) {
+        let user = {
+          mailId: String(mail.current.value).toLowerCase(),
+          name: name.current.value,
+          password: password.current.value,
+        };
+
+        let result = await SaveUser(user);
+
+        if (result.status !== 500) {
+          let response = await result.json();
+          if (result.status === 200) {
+            if (response.success) {
+              dispatch({
+                type: actions.SET_TOKEN,
+                token: response.token,
+              });
+              dispatch({
+                type: actions.SET_USER,
+                user: {
+                  id: response.userDetails.id,
+                  name: response.userDetails.name,
+                  mailId: response.userDetails.mailId,
+                },
+              });
+
+              navigation("/");
+            } else {
+              toast.warning(response.message);
+            }
           } else {
-            toast.warning(response.message);
+            toast.error(response.message);
           }
         } else {
-          toast.error(response.message);
+          setLoading(false);
+          toast.error("Invalid Credentials");
         }
       } else {
-        toast.error("Invalid Credentials");
+        toast.error("Bad Credentials");
       }
-      window.location.reload();
     }
+    setLoading(false);
+    window.location.reload();
   };
+
   return (
     <div className="Register">
+      {Loading && <Loader />}
       <div className="shadow">
         <div className="img">
-          <img src={IMAGE + "1CazG8Gh2zBwT5ZcV5K5ggZaLeDd8JYN3"} alt="Shop" />
+          <img src={LOGINIMAGE} alt="Shop" />
         </div>
         <div className="inputItems">
           <form className="form" onSubmit={handelSubmit}>

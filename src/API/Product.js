@@ -1,30 +1,30 @@
-export async function GenerateOtp(mailId, URL) {
-  let response = { status: 500 };
-  await fetch(`/api/user/${URL}?mail=${mailId}`, {
-    method: "POST",
-    headers: {
-      Accept: "application/json",
-      "content-type": "application/json",
-    },
-  })
-    .then((res) => {
-      response = res;
-      console.log(response);
-    })
-    .catch((err) => {
-      console.log(err);
-    });
-  return response;
-}
+export const fetchTreandingProducts = async () => {
+  let respones = { status: 500 };
 
-export async function ValidateOtp(mailid, otp) {
-  let response = { status: 500 };
-  await fetch(`/api/user/validateOtp?mail=${mailid}&otp=${otp}`, {
-    method: "GET",
+  await fetch("api/products/TredingProducts", {
     headers: {
       Accept: "application/json",
       "content-type": "application/json",
     },
+    method: "GET",
+  })
+    .then((res) => {
+      respones = res;
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+  return respones;
+};
+
+export const fetchAllProducts = async (limit, offset) => {
+  let response = { status: 500 };
+  await fetch(`/api/products/fetchProducts?limit=${limit}&offset=${offset}`, {
+    headers: {
+      Accept: "application/json",
+      "content-type": "application/json",
+    },
+    method: "GET",
   })
     .then((res) => {
       response = res;
@@ -32,5 +32,6 @@ export async function ValidateOtp(mailid, otp) {
     .catch((err) => {
       console.log(err);
     });
+
   return response;
-}
+};

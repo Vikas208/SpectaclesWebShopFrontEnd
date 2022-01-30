@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useRef, useState } from "react";
 import { LoginUser } from "../../API/User";
 import "../../Css/registration.css";
 import { isValidMailId } from "../../Validation/MailValidation";
@@ -7,12 +7,14 @@ import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { useDataLayerValue } from "../../DataLayer";
 import { actions } from "../../Reducer/action";
-import { IMAGE } from "../../API/ImageLink";
+import { LOGINIMAGE } from "../../API/ImageLink";
+import Loader from "../MainComponents/Loader";
 // Login [Sign In]
 export default function Login() {
   const mail = useRef("");
   const password = useRef("");
   const [, dispatch] = useDataLayerValue();
+  const [Loading, setLoading] = useState(false);
 
   const navigation = useNavigate();
   const handelSubmit = async (e) => {
@@ -21,7 +23,7 @@ export default function Login() {
       toast.error("Invalid Credentials");
       return;
     }
-
+    setLoading(true);
     let data = {
       mailId: String(mail.current.value).toLowerCase(),
       password: password.current.value,
@@ -37,20 +39,26 @@ export default function Login() {
         dispatch({
           type: actions.SET_USER,
           user: {
-            name: result.userName,
-            mailId: mail.current.value,
+            id: result.userDetails.id,
+            name: result.userDetails.name,
+            mailId: result.userDetails.mailId,
           },
         });
+        setLoading(false);
         navigation("/");
       } else {
+        setLoading(false);
         toast.error(result.message);
       }
     } else {
+      setLoading(false);
       toast.error("Something is wrong");
     }
   };
   return (
     <div className="Login">
+      {Loading && <Loader />}
+
       <div className="shadow">
         <div className="inputItems">
           <form className="form" onSubmit={handelSubmit}>
@@ -90,7 +98,7 @@ export default function Login() {
           </div>
         </div>
         <div className="img">
-          <img src={IMAGE + "1CazG8Gh2zBwT5ZcV5K5ggZaLeDd8JYN3"} alt="Shop" />
+          <img src={LOGINIMAGE} alt="Shop" />
         </div>
       </div>
     </div>

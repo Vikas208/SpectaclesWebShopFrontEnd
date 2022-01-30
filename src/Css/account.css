@@ -1,20 +1,10 @@
-:root {
-  --min-height: 100vh;
-}
-.myAccount {
-  display: flex;
-  flex-wrap: wrap;
-  min-height: var(--min-height);
-  justify-content: center;
-  align-items: center;
-}
-
 .profile {
   display: flex;
   flex-direction: column;
-  min-height: var(--min-height);
+  /* min-height: var(--min-height); */
   position: relative;
   width: 100%;
+  margin-bottom: 10px;
 }
 
 .profile_form {
@@ -26,7 +16,7 @@
 .profile_form > input {
   width: 60%;
   padding: 15px;
-  font-size: 3vmin;
+  font-size: 15px;
   margin: 2px;
   outline: none;
   border: none;
@@ -38,7 +28,7 @@
   padding: 10px;
   border: none;
   cursor: pointer;
-  font-size: 3vmin;
+  font-size: 15px;
   color: rgb(255, 253, 253);
   font-weight: 500;
   background-color: rgb(9, 58, 148);

@@ -1,18 +1,17 @@
 import React, { useRef, useState } from "react";
 import "../../Css/registration.css";
 import { isValidMailId } from "../../Validation/MailValidation";
-import { GenerateOtp } from "../../API/Otp";
+import { GenerateOtp, ValidateOtp } from "../../API/Otp";
 import { ResetPassword } from "../../API/User";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-import { IMAGE } from "../../API/ImageLink";
+import { RESETPASSWORDIMAGE } from "../../API/ImageLink";
 function Forgot() {
   const mail = useRef("");
   const otp = useRef("");
   const password = useRef("");
   const cpassword = useRef("");
   const [reset, setReset] = useState(false);
-  const [otpData, setOtp] = useState({ opt: "", time: "" });
 
   const navigate = useNavigate();
   const handelOtp = async (e) => {
@@ -24,6 +23,8 @@ function Forgot() {
       return;
     }
 
+    //disabled the mail id field and send otp button
+    //opt input will be now editable
     mail.current.disabled = true;
     otp.current.disabled = false;
     e.target.disabled = true;
@@ -31,30 +32,32 @@ function Forgot() {
     let mailId = String(mail.current.value).toLowerCase();
     let response = await GenerateOtp(mailId, "forgotPassword");
 
-    if (response.status !== 500) {
-      let data = await response.json();
-      if (response.status === 200) {
-        setOtp({ otp: data.otp, time: data.otpTime });
-        toast.success("Mail Sent On Your Mail Id");
-      } else {
-        toast.error(data.message);
-      }
+    if (response.status === 200) {
+      let result = await response.json();
+      result.success
+        ? toast.success(result.message)
+        : toast.error(result.message);
     } else {
       toast.error("Something is Wrong");
+      //Make Editable the mail id field and send otp button
+      //opt input will be now Disabled
+      mail.current.disabled = false;
+      otp.current.disabled = true;
+      e.target.disabled = false;
     }
   };
-  const hadelSubmit = (e) => {
+  const handelSubmit = async (e) => {
     e.preventDefault();
 
-    if (otp.current.value === "" || otpData.opt === " ") {
-      toast.warning("Please Verify Your Mail Id");
-      return;
-    } else if (new Date(Date.now()) > new Date(Number(otpData.time) + 300000)) {
-      toast.warn("Otp is Expired");
-    } else if (otp.current.value === otpData.otp) {
-      setReset(true);
-    } else {
-      toast.error("Something gone Wrong Try Again Later");
+    let response = await ValidateOtp(mail.current.value, otp.current.value);
+
+    if (response.status === 200) {
+      let success = await response.json();
+      if (success) {
+        setReset(true);
+      } else {
+        toast.error("Bad Credentials");
+      }
     }
   };
 
@@ -87,9 +90,9 @@ function Forgot() {
         style={{ boxShadow: "rgba(99, 99, 99, 0.2) 0px 2px 8px 0px" }}
       >
         <div className="img">
-          <img src={IMAGE + "1GyrmT30TwXgyr2Q8zwSjqEwQAJ_YyFfd"} alt="Forgot" />
+          <img src={RESETPASSWORDIMAGE} alt="Forgot" />
         </div>
-        <form className="form" onSubmit={hadelSubmit}>
+        <form className="form" onSubmit={handelSubmit}>
           <input
             type="email"
             name="mail"

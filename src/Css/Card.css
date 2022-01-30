@@ -3,18 +3,17 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  /* border: 1px solid black; */
   width: 200px;
   height: 200px;
   cursor: pointer;
-  padding: 10px 0px;
+  padding: 40px 0px;
   transition: background-color 300ms ease-in;
   box-shadow: rgba(0, 0, 0, 0.15) 0px 5px 15px 0px;
   margin: 5px;
 }
 .card > img {
-  width: 200px;
-  height: 150px;
+  width: 100px;
+  height: 100px;
   object-fit: contain;
   position: relative;
   /* z-index: 1; */

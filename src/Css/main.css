@@ -55,8 +55,8 @@
   justify-content: space-between;
 }
 .upper_left {
-  width: 60px;
-  height: 60px;
+  width: 70px;
+  height: 70px;
   margin-left: 10px;
 }
 .upper_left > img {
@@ -80,17 +80,23 @@
 .user_account {
   display: flex;
   align-items: center;
+  justify-content: center;
   margin-right: 2px;
-  border-radius: 10px;
-  padding: 15px 15px;
-  transition: all 300ms ease-in;
+  border-radius: 5px;
+  padding: 5px 5px;
+  transition: background-color 300ms ease-in;
+  /* border: 1px solid rgb(199, 198, 198); */
 }
+
 .user_account:hover {
-  background-color: aliceblue;
+  background-color: rgba(0, 0, 0, 0.733);
+}
+.user_account:hover > span {
+  color: white;
 }
 .user_account > span {
-  font-size: 18px;
-  color: rgba(20, 51, 30, 0.705);
+  font-size: 15px;
+  color: rgb(100, 100, 100);
   font-weight: normal;
   cursor: pointer;
   padding: 1px;
@@ -107,61 +113,4 @@
   .user_account > span {
     font-size: 3vmin;
   }
-}
-
-/* Footer Css */
-
-.footer {
-  border: 1px solid black;
-  display: flex;
-  flex-direction: column;
-  position: relative;
-  width: inherit;
-  justify-content: center;
-  align-items: center;
-  background-color: rgba(0, 0, 0, 0.877);
-  color: white;
-  letter-spacing: 1.5px;
-}
-.info {
-  display: flex;
-  /* flex-direction: column; */
-  flex-wrap: wrap;
-  align-items: center;
-  justify-content: center;
-}
-.info > section {
-  width: 20rem;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  margin-top: 5px;
-}
-.footer_address {
-  text-align: center;
-}
-.info > section > section {
-  display: flex;
-  flex-direction: column;
-}
-.info > section > section > span {
-  margin: 5px;
-  font-size: 14px;
-  letter-spacing: 2px;
-}
-.info > section > span {
-  font-size: 4vmin;
-  margin-bottom: 5px;
-  border-radius: 999px;
-  padding: 5px;
-  background-color: rgba(0, 0, 0, 0.514);
-  user-select: none;
-  cursor: pointer;
-}
-.info > section > section > span {
-  border: 1px solid beige;
-  border-radius: 4px;
-  padding: 5px;
 }

@@ -19,12 +19,21 @@ const reducer = (state, action) => {
         ...state,
         shopDetails: action.shopDetails,
       };
-
     case actions.LOGOUT:
       return {
         ...state,
         token: null,
         user: null,
+      };
+    case actions.SET_TRENDINGPRODUCTS:
+      return {
+        ...state,
+        TrendingProductsList: action.TrendingProductsList,
+      };
+    case actions.SET_ALLPRODUCTS:
+      return {
+        ...state,
+        AllProdcutsList: action.AllProdcutsList,
       };
     default:
       return { ...state };

@@ -1,16 +1,18 @@
 import React from "react";
 import Card from "../../MainComponents/Card";
 import "../../../Css/account.css";
+import { PROFILEIMAGE, YOUR_ORDER_IMAGE } from "../../../API/ImageLink";
 
-const YourOrderImageLink = "1Xm12Mjb8N5B9wbr4cR7-gyRAf1ytgIoc";
-const ProfileImageLink = "1LI6bdU-5Zsr4uD_ASQ1ZoBLD9ArAGQ5k";
 function MyAccount() {
   return (
-    <div className="myAccount">
+    <div
+      className="container d-flex flex-wrap justify-content-center align-items-center m-10"
+      style={{ minHeight: "50%" }}
+    >
       {/* Your Orders */}
       {/* Profile */}
-      <Card image={YourOrderImageLink} text={"Your Orders"} />
-      <Card image={ProfileImageLink} text={"Profile"} onclicktext="profile" />
+      <Card image={YOUR_ORDER_IMAGE} text={"Your Orders"} />
+      <Card image={PROFILEIMAGE} text={"Profile"} onclicktext="profile" />
     </div>
   );
 }

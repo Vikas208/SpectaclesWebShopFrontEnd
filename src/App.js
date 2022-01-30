@@ -14,6 +14,7 @@ import { useEffect } from "react";
 import { LoadShopDetails } from "./API/LoadShopDetails";
 import { isUserLogined } from "./API/User";
 import { actions } from "./Reducer/action";
+import Home from "./Components/Pages/Home/Home";
 
 let regex = /\["|"|]+/g;
 function CreateArrray(str) {
@@ -34,12 +35,14 @@ function App() {
         type: actions.SET_SHOPDETAILS,
         shopDetails: result,
       });
+      document.title = result.shopName;
     }
   };
   const isUserLogin = async () => {
     let respones = await isUserLogined();
     if (respones.status === 200) {
       let result = await respones.json();
+      console.log(result);
       dispatch({
         type: actions.SET_TOKEN,
         token: result.token,
@@ -47,8 +50,9 @@ function App() {
       dispatch({
         type: actions.SET_USER,
         user: {
-          mailId: result.mailId,
-          name: result.userName,
+          id: result.userDetails.id,
+          mailId: result.userDetails.mailId,
+          name: result.userDetails.name,
         },
       });
     }
@@ -65,6 +69,7 @@ function App() {
         <Route path="/login" element={<Login />}></Route>
         <Route path="/register" element={<Register />}></Route>
         <Route path="/" element={<Main />}>
+          <Route path="/" element={<Home />}></Route>
           {token && <Route path="/myAccount" element={<MyAccount />}></Route>}
 
           {token && (

@@ -5,15 +5,17 @@ import { toast } from "react-toastify";
 import { actions } from "../../../Reducer/action";
 import { ValidateUser } from "../../../API/User";
 import { ResetPassword } from "../../../API/User";
+import Loader from "../../MainComponents/Loader";
 import "../../../Css/account.css";
 function Profile() {
-  const [{ token, user }, dispatch] = useDataLayerValue();
+  const [{ user }, dispatch] = useDataLayerValue();
   const [isVisible, setVisible] = useState(false);
   const username = useRef("");
   const currentpassword = useRef("");
   const newpassword = useRef("");
   const cpassword = useRef("");
 
+  const [Loading, setLoading] = useState(false);
   const handelChangeName = async (e) => {
     e.preventDefault();
     if (!username.current.disabled) {
@@ -22,11 +24,11 @@ function Profile() {
         e.target.innerText = "Change Name";
         return;
       }
+      setLoading(true);
       let data = {
-        mailId: user?.mailId,
+        id: user?.id,
         name: username.current.value,
       };
-      console.log(token);
       let response = await UpdateName(data);
       if (response.status === 200) {
         let result = await response.json();
@@ -37,12 +39,14 @@ function Profile() {
         });
         username.current.disabled = true;
         e.target.innerText = "Change Name";
+        setLoading(false);
         return;
       } else {
         toast.error("something is wrong");
         username.current.value = user.name;
         username.current.disabled = true;
         e.target.innerText = "Change Name";
+        setLoading(false);
         return;
       }
     }
@@ -52,9 +56,14 @@ function Profile() {
   const handelSubmit = async (e) => {
     e.preventDefault();
 
+    if (currentpassword.current.value === newpassword.current.value) {
+      toast.info("Please Change Password");
+      return;
+    }
     if (newpassword.current.value !== cpassword.current.value) {
       return;
     }
+    setLoading(true);
     let data = {
       mailId: user?.mailId,
       password: currentpassword.current.value,
@@ -84,9 +93,11 @@ function Profile() {
       toast.error("Something is wrong");
     }
     setVisible(!isVisible);
+    setLoading(false);
   };
   return (
     <div className="profile">
+      {Loading && <Loader />}
       <div className="profile_form">
         <input type="email" defaultValue={user?.mailId} disabled required />
         <input

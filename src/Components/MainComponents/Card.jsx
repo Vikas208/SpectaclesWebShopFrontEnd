@@ -1,5 +1,4 @@
 import React from "react";
-import { IMAGE } from "../../API/ImageLink";
 import "../../Css/Card.css";
 import { useNavigate } from "react-router-dom";
 function Card({ image, text, onclicktext }) {
@@ -12,7 +11,7 @@ function Card({ image, text, onclicktext }) {
         navigation(onclicktext);
       }}
     >
-      <img src={IMAGE + image} alt="" />
+      <img src={image} alt="" />
       <span>{text}</span>
     </div>
   );
