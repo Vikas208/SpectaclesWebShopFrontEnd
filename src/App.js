@@ -13,14 +13,11 @@ import { useDataLayerValue } from "./DataLayer";
 import { useEffect } from "react";
 import { LoadShopDetails } from "./API/LoadShopDetails";
 import { isUserLogined } from "./API/User";
+import { getData } from "./API/Product";
 import { actions } from "./Reducer/action";
 import Home from "./Components/Pages/Home/Home";
-
-let regex = /\["|"|]+/g;
-function CreateArrray(str) {
-  str = String(str).replace(regex, "");
-  return String(str).split(",");
-}
+import Product from "./Components/Pages/ProductPage/Product";
+import Search from "./Components/Pages/Search/Search";
 
 function App() {
   const [{ token }, dispatch] = useDataLayerValue();
@@ -29,13 +26,13 @@ function App() {
     let response = await LoadShopDetails();
     if (response.status === 200) {
       let result = await response.json();
-      result.phoneNumber = CreateArrray(result.phoneNumber);
-      result.mailId = CreateArrray(result.mailId);
+      result.phoneNumber = JSON.parse(result?.phoneNumber);
+      result.mailId = JSON.parse(result?.mailId);
       dispatch({
         type: actions.SET_SHOPDETAILS,
         shopDetails: result,
       });
-      document.title = result.shopName;
+      document.title = result?.shopName;
     }
   };
   const isUserLogin = async () => {
@@ -57,7 +54,22 @@ function App() {
       });
     }
   };
+  const fetchProductCategories = async () => {
+    let response = await getData();
+    if (response.status === 200) {
+      let result = await response.json();
+      dispatch({
+        type: actions.DATA,
+        payload: {
+          categories: result.categories,
+          frameStyles: result.frameStyles,
+          companyNames: result.companyNames,
+        },
+      });
+    }
+  };
   useEffect(() => {
+    fetchProductCategories();
     LoadData();
     isUserLogin();
   }, []);
@@ -75,6 +87,12 @@ function App() {
           {token && (
             <Route path="/myAccount/profile" element={<Profile />}></Route>
           )}
+          <Route path="/product/:id" element={<Product />}></Route>
+          <Route path="/search/:product" element={<Search />}></Route>
+          <Route
+            path="/filterproducts/:product/:category/:frameStyle/:companyName/:group/:framesize"
+            element={<Search isFilter={true} />}
+          ></Route>
         </Route>
         <Route
           path="*"

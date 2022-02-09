@@ -25,15 +25,12 @@ const reducer = (state, action) => {
         token: null,
         user: null,
       };
-    case actions.SET_TRENDINGPRODUCTS:
+    case actions.DATA:
       return {
         ...state,
-        TrendingProductsList: action.TrendingProductsList,
-      };
-    case actions.SET_ALLPRODUCTS:
-      return {
-        ...state,
-        AllProdcutsList: action.AllProdcutsList,
+        categories: action.payload.categories,
+        frameStyles: action.payload.frameStyles,
+        companyNames: action.payload.companyNames,
       };
     default:
       return { ...state };

@@ -18,6 +18,7 @@ export const initialState = {
     name: "",
     mailId: null,
   },
-  TrendingProductsList: [],
-  AllProdcutsList: [],
+  categories: [],
+  frameStyles: [],
+  companyNames: [],
 };

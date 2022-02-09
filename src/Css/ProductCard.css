@@ -9,8 +9,8 @@
   margin: 10px;
   border-radius: 10px;
   cursor: pointer;
-  background-color: rgba(240, 248, 255, 0.432);
-  transition: background-color 300ms ease-in;
+  /* background-color: rgba(240, 248, 255, 0.432); */
+  transition: all 300ms ease-in;
 }
 .productCard > img {
   width: 200px;
@@ -34,6 +34,7 @@
   margin: 10px;
   background-color: rgb(245, 207, 157);
   border-radius: 2px;
+  font-size: 1em;
 }
 .productcard_footer {
   display: flex;
@@ -42,6 +43,7 @@
   position: relative;
   justify-content: space-around;
   margin: 10px;
+  margin-bottom: 20px;
 }
 .productcard_footer > span {
   font-size: 2em;
@@ -49,5 +51,17 @@
 }
 
 .productCard:hover {
-  background-color: beige;
+  box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;
+}
+
+/* Pagination */
+.page-link {
+  color: chocolate;
+}
+
+@media only screen and (max-width: 650px) {
+  .productCard > img {
+    width: 140px;
+    height: 140px;
+  }
 }

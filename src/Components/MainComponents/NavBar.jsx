@@ -1,12 +1,14 @@
-import React from "react";
+import React, { useRef } from "react";
 import "../../Css/main.css";
 import { useNavigate } from "react-router-dom";
 import { useDataLayerValue } from "../../DataLayer";
 import { actions } from "../../Reducer/action";
 import { Logout } from "../../API/User";
 function NavBar() {
-  const [{ token, user, shopDetails }, dispatch] = useDataLayerValue();
+  const [{ token, user, shopDetails, categories }, dispatch] =
+    useDataLayerValue();
   const navigate = useNavigate();
+  const searchProduct = useRef("");
   // handel MyAccount
 
   const handelClick = () => {
@@ -88,116 +90,89 @@ function NavBar() {
                     Home
                   </a>
                 </li>
-                <li className="nav-item dropdown">
-                  <a
-                    className="nav-link dropdown-toggle text-dark"
-                    href="/"
-                    id="navbarDropdown"
-                    role="button"
-                    data-bs-toggle="dropdown"
-                    aria-expanded="false"
-                  >
-                    Eye Glasses
-                  </a>
-                  <ul
-                    className="dropdown-menu"
-                    aria-labelledby="navbarDropdown"
-                  >
-                    <li>
-                      <a className="dropdown-item" href="/">
-                        Men
-                      </a>
-                    </li>
-                    <li>
-                      <a className="dropdown-item" href="/">
-                        Women
-                      </a>
-                    </li>
-                    <li>
-                      <a className="dropdown-item" href="/">
-                        Kids
-                      </a>
-                    </li>
-                  </ul>
-                </li>
-                <li className="nav-item dropdown">
-                  <a
-                    className="nav-link dropdown-toggle text-dark"
-                    href="/"
-                    id="navbarDropdown"
-                    role="button"
-                    data-bs-toggle="dropdown"
-                    aria-expanded="false"
-                  >
-                    Sun Glasses
-                  </a>
-                  <ul
-                    className="dropdown-menu"
-                    aria-labelledby="navbarDropdown"
-                  >
-                    <li>
-                      <a className="dropdown-item" href="/">
-                        Men
-                      </a>
-                    </li>
-                    <li>
-                      <a className="dropdown-item" href="/">
-                        Women
-                      </a>
-                    </li>
-                    <li>
-                      <a className="dropdown-item" href="/">
-                        Kids
-                      </a>
-                    </li>
-                  </ul>
-                </li>
-                <li className="nav-item dropdown ">
-                  <a
-                    className="nav-link dropdown-toggle text-dark"
-                    href="/"
-                    id="navbarDropdown"
-                    role="button"
-                    data-bs-toggle="dropdown"
-                    aria-expanded="false"
-                  >
-                    Contact Lenses
-                  </a>
-                  <ul
-                    className="dropdown-menu"
-                    aria-labelledby="navbarDropdown"
-                  >
-                    <li>
-                      <a className="dropdown-item" href="/">
-                        Men
-                      </a>
-                    </li>
-                    <li>
-                      <a className="dropdown-item" href="/">
-                        Women
-                      </a>
-                    </li>
-                    <li>
-                      <a className="dropdown-item" href="/">
-                        Kids
-                      </a>
-                    </li>
-                  </ul>
-                </li>
+                {categories?.length !== 0 &&
+                  categories.map((element, index) => {
+                    return (
+                      <li className="nav-item dropdown" key={index}>
+                        <a
+                          className="nav-link dropdown-toggle text-dark"
+                          href="/"
+                          id="navbarDropdown"
+                          role="button"
+                          data-bs-toggle="dropdown"
+                          aria-expanded="false"
+                        >
+                          {element?.data}
+                        </a>
+                        <ul
+                          className="dropdown-menu"
+                          aria-labelledby="navbarDropdown"
+                        >
+                          <li>
+                            {/* Pass url as filterproducts/:product/:category/:frameStyle/:companyName:/group/:framesize  */}
+                            <span
+                              className="dropdown-item"
+                              onClick={() => {
+                                navigate(
+                                  `/filterproducts/^/${element?.data}/^/^/male/^`
+                                );
+                              }}
+                            >
+                              Men
+                            </span>
+                          </li>
+                          <li>
+                            <span
+                              className="dropdown-item"
+                              onClick={() =>
+                                navigate(
+                                  `/filterproducts/^/${element?.data}/^/^/Female/^`
+                                )
+                              }
+                              style={{ cursor: "pointer" }}
+                            >
+                              Women
+                            </span>
+                          </li>
+                          <li>
+                            <span
+                              className="dropdown-item"
+                              onClick={() =>
+                                navigate(
+                                  `/filterproducts/^/${element?.data}/^/^/kids/^`
+                                )
+                              }
+                            >
+                              Kids
+                            </span>
+                          </li>
+                        </ul>
+                      </li>
+                    );
+                  })}
+
                 <li className="nav-item">
                   <a className="nav-link active" aria-current="page" href="/">
                     User Guide
                   </a>
                 </li>
               </ul>
-              <form className="d-flex">
+              <form
+                className="d-flex"
+                onSubmit={(e) => {
+                  e.preventDefault();
+                  navigate(`/search/${searchProduct.current.value}`);
+                }}
+              >
                 <input
                   className="form-control me-2 p-2"
                   type="search"
-                  placeholder="Search for Product"
+                  placeholder="Search for Product Name"
                   aria-label="Search"
+                  ref={searchProduct}
+                  required
                 />
-                <button className="btn btn-dark" type="button">
+                <button className="btn btn-dark" type="submit">
                   Search
                 </button>
               </form>
