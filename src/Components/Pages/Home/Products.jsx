@@ -54,6 +54,11 @@ function Products() {
     setLoading(true);
     fetchProducts(limit, offset);
     setLoading(false);
+
+    return () => {
+      setLoading(false);
+      setAllProductsList([]);
+    };
   }, [limit, offset]);
 
   useLayoutEffect(() => {
@@ -62,11 +67,20 @@ function Products() {
     fetchTrendProducts();
     fetchTotalNumberOfProducts();
     setLoading(false);
+
+    return () => {
+      setTrendingProducts([]);
+      setTotalProduct(0);
+      setLoading(false);
+    };
   }, []);
 
   useEffect(() => {
     // console.log("pagination");
     Pagination();
+    return () => {
+      setPages(0);
+    };
   }, [totalProducts]);
 
   return (
@@ -143,7 +157,7 @@ function Products() {
                 <span
                   className="page-link"
                   style={
-                    totalProducts <= offset
+                    AllProdcutsList.length < limit
                       ? { display: "none", cursor: "pointer" }
                       : { display: "block", cursor: "pointer" }
                   }

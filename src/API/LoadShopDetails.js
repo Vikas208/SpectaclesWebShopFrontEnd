@@ -34,3 +34,22 @@ export async function LoadCarousel() {
     });
   return response;
 }
+
+export async function LoadPricingDetails() {
+  let response = { status: 500 };
+
+  await fetch("/api/load/pricingDetails", {
+    method: "GET",
+    headers: {
+      Accept: "application/json",
+      "content-type": "application/json",
+    },
+  })
+    .then((res) => {
+      response = res;
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+  return response;
+}

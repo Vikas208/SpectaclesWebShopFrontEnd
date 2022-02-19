@@ -29,16 +29,18 @@
   width: 200px;
   padding: 10px 0px;
   margin: 10px;
-  background-color: bisque;
+  /* background-color: rgb(253, 114, 72); */
+  background-color: rgb(206, 69, 69);
   border-radius: 2px;
   font-size: 1em;
   display: flex;
   align-items: center;
   justify-content: center;
+  border-radius: 999px;
 }
 .btn_product > span {
   margin-left: 6px;
-  color: rgb(255, 115, 0);
+  color: rgb(255, 245, 238);
 }
 
 .product_info > span {

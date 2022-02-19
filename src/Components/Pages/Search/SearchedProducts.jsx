@@ -9,8 +9,16 @@ import {
 import ProductCard from "../../MainComponents/ProductCard";
 import Loader from "../../MainComponents/Loader";
 function Searchedproducts({ isFilter = false }) {
-  const { product, category, frameStyle, companyName, group, framesize } =
-    useParams();
+  const {
+    product,
+    category,
+    frameStyle,
+    companyName,
+    group,
+    framesize,
+    startingprice,
+    endingprice,
+  } = useParams();
 
   const [{ limit, offset }, setValues] = useState({ limit: 15, offset: 0 });
   const [length, setLength] = useState(0);
@@ -27,7 +35,9 @@ function Searchedproducts({ isFilter = false }) {
           frameStyle,
           companyName,
           group,
-          framesize
+          framesize,
+          startingprice,
+          endingprice
         );
     if (response.status === 200) {
       let result = await response.json();
@@ -47,6 +57,8 @@ function Searchedproducts({ isFilter = false }) {
           companyName,
           group,
           framesize,
+          startingprice,
+          endingprice,
           offset
         );
     if (response.status === 200) {
@@ -72,10 +84,27 @@ function Searchedproducts({ isFilter = false }) {
     // console.log("count");
     CountTotalLength();
     pagination();
-  }, [product, category, frameStyle, companyName, group, framesize]);
+
+    return () => {
+      setLength(0);
+      setPages(0);
+    };
+  }, [
+    product,
+    category,
+    frameStyle,
+    companyName,
+    group,
+    framesize,
+    startingprice,
+    endingprice,
+  ]);
   useLayoutEffect(() => {
     // console.log("product");
     fetchProducts();
+    return () => {
+      setProducts([]);
+    };
   }, [
     limit,
     offset,
@@ -85,6 +114,8 @@ function Searchedproducts({ isFilter = false }) {
     companyName,
     group,
     framesize,
+    startingprice,
+    endingprice,
   ]);
   return (
     <>
@@ -152,7 +183,7 @@ function Searchedproducts({ isFilter = false }) {
                   <span
                     className="page-link"
                     style={
-                      length - 1 <= offset
+                      Searchedproducts.length < limit
                         ? { display: "none", cursor: "pointer" }
                         : { display: "block", cursor: "pointer" }
                     }

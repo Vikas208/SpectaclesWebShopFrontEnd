@@ -10,6 +10,7 @@ function Reviewform({ p_id }) {
   const [{ user }] = useDataLayerValue();
 
   const SaveUserFeedBack = async (e) => {
+    // e.preventDefault();
     document.getElementById("reviewForm").style.display = "none";
     e.preventDefault();
     if (rating === 0 && feedback.current.value === "") {

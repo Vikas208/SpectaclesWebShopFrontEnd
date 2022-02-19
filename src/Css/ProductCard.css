@@ -27,14 +27,17 @@
   width: 200px;
   text-align: center;
 }
-.productCard > button {
+._btn {
   border: none;
   width: 200px;
   padding: 10px 0px;
   margin: 10px;
-  background-color: rgb(245, 207, 157);
+  /* background-color: rgb(243, 152, 33); */
+  background-color: rgb(206, 69, 69);
+  color: white;
   border-radius: 2px;
   font-size: 1em;
+  border-radius: 999px;
 }
 .productcard_footer {
   display: flex;
@@ -56,7 +59,11 @@
 
 /* Pagination */
 .page-link {
-  color: chocolate;
+  color: rgb(228, 69, 69);
+}
+.page-link:hover {
+  background-color: rgb(238, 54, 82);
+  color: rgb(255, 246, 246);
 }
 
 @media only screen and (max-width: 650px) {

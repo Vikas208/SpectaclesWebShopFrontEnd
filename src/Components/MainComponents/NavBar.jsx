@@ -1,12 +1,15 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 import "../../Css/main.css";
 import { useNavigate } from "react-router-dom";
 import { useDataLayerValue } from "../../DataLayer";
 import { actions } from "../../Reducer/action";
 import { Logout } from "../../API/User";
+
 function NavBar() {
-  const [{ token, user, shopDetails, categories }, dispatch] =
-    useDataLayerValue();
+  const [
+    { token, user, shopDetails, categories, NumberOfCartProducts },
+    dispatch,
+  ] = useDataLayerValue();
   const navigate = useNavigate();
   const searchProduct = useRef("");
   // handel MyAccount
@@ -34,14 +37,46 @@ function NavBar() {
               >
                 account_circle
               </span>
+
               <span>{user.name}</span>
             </div>
           )}
-          <span className="material-icons-outlined">favorite_border</span>
-          <span className="material-icons-outlined">shopping_cart</span>
+          {token && (
+            <>
+              <span
+                className="material-icons"
+                style={{ color: "#ed3f3f" }}
+                onClick={() => {
+                  navigate("/wishlist");
+                }}
+              >
+                favorite
+              </span>
+              <section className="d-flex">
+                <span
+                  className={
+                    NumberOfCartProducts !== 0
+                      ? "material-icons"
+                      : "material-icons-outlined"
+                  }
+                  id="nav_cart"
+                  style={{
+                    color: "#469ad7",
+                  }}
+                  onClick={() => {
+                    navigate("/cart");
+                  }}
+                >
+                  shopping_cart
+                </span>
+                <span>{NumberOfCartProducts}</span>
+              </section>
+            </>
+          )}
           {token ? (
             <span
               className="material-icons-outlined"
+              style={{ color: "#ff0000" }}
               onClick={async () => {
                 dispatch({
                   type: actions.LOGOUT,
@@ -54,6 +89,7 @@ function NavBar() {
           ) : (
             <span
               className="material-icons-outlined"
+              style={{ color: "#0995fb" }}
               onClick={() => {
                 navigate("/login");
               }}
@@ -114,7 +150,7 @@ function NavBar() {
                               className="dropdown-item"
                               onClick={() => {
                                 navigate(
-                                  `/filterproducts/^/${element?.data}/^/^/male/^`
+                                  `/filterproducts/^/${element?.data}/^/^/male/^/0/0`
                                 );
                               }}
                             >
@@ -126,7 +162,7 @@ function NavBar() {
                               className="dropdown-item"
                               onClick={() =>
                                 navigate(
-                                  `/filterproducts/^/${element?.data}/^/^/Female/^`
+                                  `/filterproducts/^/${element?.data}/^/^/female/^/0/0`
                                 )
                               }
                               style={{ cursor: "pointer" }}
@@ -139,7 +175,7 @@ function NavBar() {
                               className="dropdown-item"
                               onClick={() =>
                                 navigate(
-                                  `/filterproducts/^/${element?.data}/^/^/kids/^`
+                                  `/filterproducts/^/${element?.data}/^/^/kids/^/0/0`
                                 )
                               }
                             >

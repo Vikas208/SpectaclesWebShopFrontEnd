@@ -21,4 +21,7 @@ export const initialState = {
   categories: [],
   frameStyles: [],
   companyNames: [],
+  glassPricing: {},
+  taxDetails: {},
+  NumberOfCartProducts: 0,
 };

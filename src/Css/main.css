@@ -68,14 +68,28 @@
 .upper_right {
   display: flex;
   align-items: center;
+  justify-content: center;
   margin-right: 7px;
 }
 .upper_right > span {
   font-size: 28px;
-  color: rgba(8, 8, 8, 0.692);
+
   font-weight: normal;
   cursor: pointer;
   padding: 4px;
+}
+.upper_right section {
+  display: flex;
+  font-weight: normal;
+  cursor: pointer;
+  padding: 4px;
+  align-items: center;
+}
+.upper_right section span:nth-child(2) {
+  font-size: 15px;
+  align-self: flex-start;
+  margin-bottom: 10px;
+  color: rgb(32, 97, 66);
 }
 .user_account {
   display: flex;
@@ -93,9 +107,9 @@
     rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
 }
 
-.user_account > span {
+.user_account span {
   font-size: 15px;
-  color: rgb(100, 100, 100);
+
   font-weight: normal;
   cursor: pointer;
   padding: 1px;
@@ -104,12 +118,15 @@
 @media only screen and (max-width: 650px) {
   .phonenumber > span,
   .mailId > span {
-    font-size: 3vmin;
+    font-size: 15px;
   }
   .upper_right > span {
-    font-size: 5vmin;
+    font-size: 20px;
+  }
+  .upper_right section span {
+    font-size: 20px;
   }
   .user_account > span {
-    font-size: 3vmin;
+    font-size: 15px;
   }
 }

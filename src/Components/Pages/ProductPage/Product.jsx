@@ -47,9 +47,15 @@ function Product() {
   }
 
   useLayoutEffect(() => {
-    fetchReviews();
-    fetchImages();
     fetchProduct();
+    fetchImages();
+    fetchReviews();
+
+    return () => {
+      setReviews([]);
+      setImages([]);
+      setProduct([]);
+    };
   }, []);
 
   return (
@@ -75,73 +81,44 @@ function Product() {
             <h3>{product?.p_name}</h3>
             <span>{product?.productDescription?.p_description}</span>
             {/* price */}
-            {product?.productSales?.saleOff !== 0 && (
-              <div
-                className="container d-flex flex-column justify-content-start align-items-start"
-                style={{ fontSize: "2em", letterSpacing: "1.5px" }}
-              >
-                <span style={{ margin: "0.6px" }}>
-                  ₹
-                  {(product?.p_price - product?.productSales?.saleOff).toFixed(
-                    2
-                  )}
-                </span>
 
-                <span
-                  style={{
-                    textDecorationLine: "line-through",
-                    textDecorationThickness: "3px",
-                    fontSize: "0.5em",
-                    margin: "0.6px",
-                  }}
-                >
-                  ₹{product?.p_price}
-                </span>
+            <div className="container d-flex flex-column align-items-left">
+              <span style={{ fontSize: "24px" }}>
+                ₹
+                {(
+                  product?.p_price -
+                  product?.productSales.saleOff -
+                  (product?.p_price * product?.productSales?.salePercentage) /
+                    100
+                ).toFixed(2)}
+              </span>
 
-                <span style={{ fontSize: "0.5em", margin: "0.6px" }}>
-                  ₹{product?.productSales?.saleOff} OFF
-                </span>
-              </div>
-            )}
-            {product?.productSales?.salePercentage !== 0 && (
-              <div
-                className="d-flex flex-column justify-content-start align-items-start"
-                style={{ fontSize: "2em", letterSpacing: "1.5px" }}
-              >
-                <span>
-                  ₹
-                  {(
-                    product?.p_price -
-                    product?.p_price *
-                      (product?.productSales?.salePercentage / 100)
-                  ).toFixed(2)}
-                </span>
-                <span
-                  style={{
-                    textDecorationLine: "line-through",
-                    textDecorationThickness: "2px",
-                    fontSize: "0.5em",
-                    margin: "0.6px",
-                  }}
-                >
-                  ₹{product?.p_price}
-                </span>
-                <span style={{ fontSize: "0.5em", margin: "0.6px" }}>
-                  Save ₹
-                  {(
-                    product?.p_price *
-                    (product?.productSales?.salePercentage / 100)
-                  ).toFixed(2)}
-                </span>
-              </div>
-            )}
+              {product?.productSales?.saleOff !== 0 ||
+                (product?.productSales?.salePercentage !== 0 && (
+                  <span
+                    style={{
+                      textDecoration: "line-through",
+                      fontSize: "18px",
+                      textDecorationThickness: "2px",
+                    }}
+                  >
+                    ₹{product?.p_price}
+                  </span>
+                ))}
+              {product?.productSales?.saleOff !== 0 ||
+                (product?.productSales?.salePercentage !== 0 && (
+                  <span style={{ fontSize: "20px" }}>
+                    Save ₹
+                    {(
+                      product?.productSales?.saleOff +
+                      (product?.p_price *
+                        product?.productSales?.salePercentage) /
+                        100
+                    ).toFixed(2)}
+                  </span>
+                ))}
+            </div>
 
-            {product?.productSales?.saleOff === 0 &&
-              product?.productSales?.salePercentage === 0 && (
-                <span style={{ fontSize: "2em", margin: "0.6px" }}>
-                  ₹{product?.p_price}
-                </span>
-              )}
             {product?.rating !== 0 && (
               <Rating
                 name="rating"
@@ -160,16 +137,16 @@ function Product() {
             )}
             <div>
               <button className="btn_product">
-                <span>Add To Cart</span>
                 <span className="material-icons">shopping_cart</span>
+                <span>Add To Cart</span>
               </button>
               <button className="btn_product">
-                <span>Add to WishList</span>
                 <span className="material-icons">favorite_border</span>
+                <span>Add to WishList</span>
               </button>
               <button className="btn_product">
-                <span>Shop now</span>
                 <span className="material-icons-sharp">shopping_bag</span>
+                <span>Shop now</span>
               </button>
               <div>
                 <button
@@ -178,8 +155,8 @@ function Product() {
                     token ? setfeedBack((pre) => !pre) : navigation("/login");
                   }}
                 >
-                  <span>Feedback</span>
                   <span className="material-icons-sharp">feedback</span>
+                  <span>Feedback</span>
                 </button>
                 {feedBack && <Reviewform p_id={product?.id} />}
               </div>
@@ -191,21 +168,15 @@ function Product() {
       {/* description */}
       {product?.productDescription && (
         <div className="container">
-          <h5>Details</h5>
-          <table
-            className="table table-borderless"
-            style={{
-              boxShadow:
-                "rgba(0, 0, 0, 0.05) 0px 0px 0px 1px, rgb(209, 213, 219) 0px 0px 0px 1px inset",
-            }}
-          >
-            <thead>
+          <h5>Product Description</h5>
+          <table className="table">
+            <thead className="table table-borderless">
               <tr>
                 <th scope="col">#</th>
                 <th scope="col">Description</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className="table-light">
               <tr>
                 <th scope="row">Company Name</th>
                 <td>{product?.productDescription?.company_name}</td>

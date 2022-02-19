@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useLayoutEffect } from "react";
 import Carousel from "../../MainComponents/Carousel";
 import Products from "./Products";
 import { LoadCarousel } from "../../../API/LoadShopDetails";
@@ -11,8 +11,9 @@ function Home() {
       setCarouselImages(result);
     }
   };
-  useEffect(() => {
+  useLayoutEffect(() => {
     loadCarousel();
+    return setCarouselImages([{ images: "" }]);
   }, []);
   return (
     <div>

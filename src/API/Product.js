@@ -176,22 +176,20 @@ export const CountFilterProducts = async (
   frameStyle,
   companyName,
   group,
-  frameSize
+  frameSize,
+  sprice,
+  eprice
 ) => {
   let response = { status: 500 };
-  name = String(name).replace("^", "%5E");
-  category = String(category).replace("|", "%7").replace("^", "%5E");
-  frameStyle = String(frameStyle).replace("|", "%7").replace("^", "%5E");
-  companyName = String(companyName).replace("|", "%7").replace("^", "%5E");
-  group = String(group).replace("|", "%7").replace("^", "%5E");
-  frameSize = String(frameSize).replace("|", "%7").replace("^", "%5E");
-  // console.log(category + " " + frameStyle + " " + companyName + " " + group);
+
   await fetch(
-    `/api/products/fetch/countFilterProducts?product=${name}&category=${category}&frameStyle=${frameStyle}&companyName=${companyName}&group=${group}&framesize=${frameSize}`,
+    encodeURI(
+      `/api/products/fetch/countFilterProducts?product=${name}&category=${category}&frameStyle=${frameStyle}&companyName=${companyName}&group=${group}&framesize=${frameSize}&startingprice=${sprice}&endingprice=${eprice}`
+    ),
     {
       headers: {
         Accept: "application/json",
-        "Content-Type": "application/json",
+        "Content-Type": "application/x-www-form-urlencoded",
       },
       method: "GET",
     }
@@ -212,23 +210,20 @@ export const fetchfilterProducts = async (
   companyName,
   group,
   frameSize,
+  sprice,
+  eprice,
   offset
 ) => {
   let response = { status: 500 };
-  // console.log(category + " " + frameStyle + " " + companyName + " " + group);
-  name = String(name).replace("^", "%5E");
-  category = String(category).replace("|", "%7").replace("^", "%5E");
-  frameStyle = String(frameStyle).replace("|", "%7").replace("^", "%5E");
-  companyName = String(companyName).replace("|", "%7").replace("^", "%5E");
-  group = String(group).replace("|", "%7").replace("^", "%5E");
-  frameSize = String(frameSize).replace("|", "%7").replace("^", "%5E");
 
   await fetch(
-    `/api/products/fetch/filterproducts?product=${name}&category=${category}&frameStyle=${frameStyle}&companyName=${companyName}&group=${group}&framesize=${frameSize}&offset=${offset}`,
+    encodeURI(
+      `/api/products/fetch/filterproducts?product=${name}&category=${category}&frameStyle=${frameStyle}&companyName=${companyName}&group=${group}&framesize=${frameSize}&startingprice=${sprice}&endingprice=${eprice}&offset=${offset}`
+    ),
     {
       headers: {
         Accept: "application/json",
-        "Content-Type": "application/json",
+        "Content-Type": "application/x-www-form-urlencoded",
       },
       method: "GET",
     }

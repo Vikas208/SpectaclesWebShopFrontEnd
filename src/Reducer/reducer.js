@@ -32,6 +32,21 @@ const reducer = (state, action) => {
         frameStyles: action.payload.frameStyles,
         companyNames: action.payload.companyNames,
       };
+    case actions.SETCART:
+      return {
+        ...state,
+        NumberOfCartProducts: action.NumberOfCartProducts,
+      };
+    case actions.SET_GLASSPRICING:
+      return {
+        ...state,
+        glassPricing: action.glassPricing,
+      };
+    case actions.TAXDETAILS:
+      return {
+        ...state,
+        taxDetails: action.taxDetails,
+      };
     default:
       return { ...state };
   }
