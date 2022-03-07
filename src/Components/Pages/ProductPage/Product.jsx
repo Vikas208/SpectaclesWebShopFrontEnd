@@ -12,13 +12,17 @@ import "../../../Css/productDetails.css";
 import Reviews from "../../MainComponents/Reviews";
 import Reviewform from "../../MainComponents/Reviewform";
 import { useDataLayerValue } from "../../../DataLayer";
+import { saveToCart, saveToWishList } from "../../../API/CustomerProduct";
 import { useNavigate } from "react-router-dom";
+import { actions } from "../../../Reducer/action";
+import { toast } from "react-toastify";
+
 function Product() {
   const [reviews, setReviews] = useState([]);
   const [images, setImages] = useState([]);
   const [product, setProduct] = useState([]);
   const [feedBack, setfeedBack] = useState(false);
-  const [{ token }] = useDataLayerValue();
+  const [{ token, user, NumberOfCartProducts }, dispatch] = useDataLayerValue();
   const navigation = useNavigate();
   const { id } = useParams();
 
@@ -45,6 +49,32 @@ function Product() {
       setProduct(result);
     }
   }
+
+  const handelSaveToCart = async () => {
+    let data = {
+      common_id: user?.id,
+      p_id: product?.id,
+    };
+    let response = await saveToCart(data);
+    if (response.status === 200) {
+      dispatch({
+        type: actions.SETCART,
+        NumberOfCartProducts: NumberOfCartProducts + 1,
+      });
+    } else {
+      toast.error("Something is Wrong");
+    }
+  };
+  const handelSaveToWishList = async () => {
+    let data = {
+      common_id: user?.id,
+      p_id: product?.id,
+    };
+    let response = await saveToWishList(data);
+    if (response.status !== 200) {
+      toast.error("Something is wrong");
+    }
+  };
 
   useLayoutEffect(() => {
     fetchProduct();
@@ -136,11 +166,21 @@ function Product() {
               <span>Available Products are {product?.p_stock}</span>
             )}
             <div>
-              <button className="btn_product">
+              <button
+                className="btn_product"
+                onClick={(e) => {
+                  token ? handelSaveToCart() : navigation("/login");
+                }}
+              >
                 <span className="material-icons">shopping_cart</span>
                 <span>Add To Cart</span>
               </button>
-              <button className="btn_product">
+              <button
+                className="btn_product"
+                onClick={() => {
+                  token ? handelSaveToWishList() : navigation("/login");
+                }}
+              >
                 <span className="material-icons">favorite_border</span>
                 <span>Add to WishList</span>
               </button>

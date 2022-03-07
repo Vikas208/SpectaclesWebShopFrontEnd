@@ -21,7 +21,14 @@ export const initialState = {
   categories: [],
   frameStyles: [],
   companyNames: [],
-  glassPricing: {},
-  taxDetails: {},
   NumberOfCartProducts: 0,
+  reloadCartPricing: false,
+  orderDetails: {
+    orderAddress: null,
+    orderProducts: null,
+    orderPayment: null,
+  },
+  isCardOrder: null,
+  shopNowProduct: null,
+  showOrderProductDialog: false,
 };

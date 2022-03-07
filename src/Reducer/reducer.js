@@ -47,6 +47,50 @@ const reducer = (state, action) => {
         ...state,
         taxDetails: action.taxDetails,
       };
+    case actions.RELOADCARTPRICING:
+      return {
+        ...state,
+        reloadCartPricing: action.reloadCartPricing,
+      };
+    case actions.SETORDERADDRESS:
+      return {
+        ...state,
+        orderDetails: {
+          ...state.orderDetails,
+          orderAddress: action.orderAddress,
+        },
+      };
+    case actions.SETORDERPAYMENT:
+      return {
+        ...state,
+        orderDetails: {
+          ...state.orderDetails,
+          orderPayment: action.orderPayment,
+        },
+      };
+    case actions.SETORDERPRODUCTS:
+      return {
+        ...state,
+        orderDetails: {
+          ...state.orderDetails,
+          orderProducts: action.orderProducts,
+        },
+      };
+    case actions.ISCARTORDER:
+      return {
+        ...state,
+        isCardOrder: action.isCardOrder,
+      };
+    case actions.SETSHOPNOWPRODUCT:
+      return {
+        ...state,
+        shopNowProduct: action.shopNowProduct,
+      };
+    case actions.SETSHOWORDERDIALOG:
+      return {
+        ...state,
+        showOrderProductDialog: action.showOrderProductDialog,
+      };
     default:
       return { ...state };
   }

@@ -1,27 +1,32 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { useRef, useState } from "react";
 import { updateCartDetails } from "../../../API/CustomerProduct";
-
+import { useNavigate } from "react-router-dom";
 import "../../../Css/cartproduct.css";
+import { useDataLayerValue } from "../../../DataLayer";
+import { actions } from "../../../Reducer/action";
 function CartProduct(props) {
+  const navigate = useNavigate();
   const qty = useRef(1);
   const leftEye = useRef(0);
   const rightEye = useRef(0);
   const glass = useRef(false);
   const fiber = useRef(true);
   const onlyframe = useRef(false);
-
   const [hide, setHide] = useState(Boolean(props?.props?.onlyframe));
+  const [fiberCheck, setFiberCheck] = useState(false);
+  const [glassCheck, setGlassCheck] = useState(false);
+  const [{}, dispatch] = useDataLayerValue();
 
-  const updateDetails = async (e) => {
-    e.preventDefault();
+  const updateDetails = async () => {
     let data = {
       id: props?.props?.id,
-      qty: props?.props?.qty,
-      glassType:
-        (!(glass.current.checked && "Glass") ||
-          (fiber.current.checked && "Fiber")) &&
-        "",
+      qty: Number(qty.current.value),
+      glassType: glass.current.checked
+        ? "Glass"
+        : fiber.current.checked
+        ? "Fiber"
+        : null,
       onlyframe: onlyframe.current.checked,
       left_eye_no: Number(leftEye.current.value),
       right_eye_no: Number(rightEye.current.value),
@@ -30,8 +35,18 @@ function CartProduct(props) {
     if (response.status === 200) {
       let result = await response.json();
       console.log(result);
+      dispatch({
+        type: actions.RELOADCARTPRICING,
+        reloadCartPricing: true,
+      });
     }
   };
+  useEffect(() => {
+    setFiberCheck(String(props?.props?.glassType).toLowerCase() === "fiber");
+    setGlassCheck(String(props?.props?.glassType).toLowerCase() === "glass");
+    // console.log(String(props?.props?.glassType).toLowerCase() === "fiber");
+    // console.log(fiberCheck + " " + glassCheck);
+  }, [props?.props?.glassType]);
   return (
     <div>
       <section style={{ maxHeight: "200px" }}>
@@ -53,7 +68,7 @@ function CartProduct(props) {
         ₹
         {(
           props?.props?.products?.p_price -
-          props?.props?.products?.productSales.saleOff -
+          props?.props?.products?.productSales?.saleOff -
           (props?.props?.products?.p_price *
             props?.props?.products?.productSales?.salePercentage) /
             100
@@ -70,24 +85,30 @@ function CartProduct(props) {
             min={1}
           />
         </div>
-        {props?.props?.products?.productDescription?.p_category !==
-          "Sun Glass" && (
+        {String(
+          props?.props?.products?.productDescription?.p_category
+        ).toLowerCase() !== "Sun Glass".toLowerCase() && (
           <>
-            <div>
-              <label className="form-check-label" htmlFor="defaultCheck1">
-                Only Frame
-              </label>
-              <input
-                className="form-check-input"
-                type="checkbox"
-                defaultValue={props?.props?.onlyframe}
-                id="defaultCheck1"
-                ref={onlyframe}
-                onChange={() => {
-                  setHide((pre) => !pre);
-                }}
-              />
-            </div>
+            {String(
+              props?.props?.products?.productDescription?.p_category
+            ).toLowerCase() !== "lens".toLowerCase() && (
+              <div>
+                <label className="form-check-label" htmlFor="defaultCheck1">
+                  Only Frame
+                </label>
+                <input
+                  className="form-check-input"
+                  type="checkbox"
+                  defaultValue={props?.props?.onlyframe}
+                  id="defaultCheck1"
+                  ref={onlyframe}
+                  onChange={() => {
+                    setHide((pre) => !pre);
+                  }}
+                />
+              </div>
+            )}
+
             {hide === false && (
               <>
                 <div className="input">
@@ -108,37 +129,71 @@ function CartProduct(props) {
                     ref={rightEye}
                   />
                 </div>
-
-                <div>
-                  <label className="form-check-label" htmlFor="exampleRadios1">
-                    Glass
-                  </label>
-                  <input
-                    className="form-check-input"
-                    type="radio"
-                    name="glassType"
-                    id="exampleRadios1"
-                    ref={glass}
-                  />
-                </div>
-                <div>
-                  <label className="form-check-label" htmlFor="exampleRadios1">
-                    Fiber Glass
-                  </label>
-                  <input
-                    className="form-check-input"
-                    type="radio"
-                    name="glassType"
-                    id="exampleRadios1"
-                    ref={fiber}
-                  />
-                </div>
+                {String(
+                  props?.props?.products?.productDescription?.p_category
+                ).toLowerCase() !== "lens".toLowerCase() && (
+                  <>
+                    <div>
+                      <label
+                        className="form-check-label"
+                        htmlFor="exampleRadios1"
+                      >
+                        Glass
+                      </label>
+                      <input
+                        className="form-check-input"
+                        type="radio"
+                        name="glassType"
+                        id="exampleRadios1"
+                        ref={glass.current.value}
+                        checked={glassCheck}
+                        onChange={() => {
+                          setGlassCheck(!glassCheck);
+                        }}
+                      />
+                    </div>
+                    <div>
+                      <label
+                        className="form-check-label"
+                        htmlFor="exampleRadios1"
+                      >
+                        Fiber Glass
+                      </label>
+                      <input
+                        className="form-check-input"
+                        type="radio"
+                        name="glassType"
+                        id="exampleRadios1"
+                        ref={fiber.current.value}
+                        checked={fiberCheck}
+                        onChange={() => {
+                          setFiberCheck(!fiberCheck);
+                        }}
+                      />
+                    </div>
+                  </>
+                )}
               </>
             )}
           </>
         )}
-
-        <button onClick={updateDetails}>Update</button>
+        <section className="d-flex flex-column justify-content-center align-items-center">
+          <button
+            onClick={(e) => {
+              e.preventDefault();
+              updateDetails();
+            }}
+            className="cart_product_button"
+          >
+            Update
+          </button>
+          <button
+            className="cart_product_button"
+            onClick={() => navigate(`/product/${props?.props?.p_id}`)}
+          >
+            Go To Product
+          </button>
+        </section>
         <br />
         <small>Please Click on update if you change the details</small>
         <br />

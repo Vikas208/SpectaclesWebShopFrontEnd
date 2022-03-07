@@ -1,7 +1,31 @@
 import React from "react";
 import { Rating } from "@mui/material";
 import "../../../Css/ProductCard.css";
+import { useDataLayerValue } from "../../../DataLayer";
+import { saveToCart } from "../../../API/CustomerProduct";
+import { actions } from "../../../Reducer/action";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
 function WishListCard(props) {
+  const [{ user, NumberOfCartProducts }, dispatch] = useDataLayerValue();
+  const navigate = useNavigate();
+  const handelSaveToCart = async () => {
+    let data = {
+      c_id: user?.id,
+      p_id: props?.props?.p_id,
+    };
+    let response = await saveToCart(data);
+    console.log(response);
+    if (response.status === 200) {
+      let result = await response.json();
+      dispatch({
+        type: actions.SETCART,
+        NumberOfCartProducts: NumberOfCartProducts + 1,
+      });
+    } else {
+      toast.error("Something is Wrong");
+    }
+  };
   return (
     <div className=" col">
       <section style={{ maxHeight: "200px" }}>
@@ -24,7 +48,7 @@ function WishListCard(props) {
         <Rating
           size="medium"
           defaultValue={
-            props?.props?.products?.rating
+            Number(props?.props?.products?.rating)
               ? Number(props?.props?.products?.rating).toFixed(2)
               : 0
           }
@@ -34,7 +58,24 @@ function WishListCard(props) {
         />
       </div>
       <p className="price">₹{props?.props?.products?.p_price}</p>
-      <button className="_btn">Move To Cart</button>
+      <section className="d-flex flex-column">
+        <button
+          className="_btn"
+          onClick={(e) => {
+            handelSaveToCart();
+          }}
+        >
+          Move To Cart
+        </button>
+        <button
+          className="_btn"
+          onClick={(e) => {
+            navigate(`/product/${props?.props?.p_id}`);
+          }}
+        >
+          Go To Product
+        </button>
+      </section>
     </div>
   );
 }

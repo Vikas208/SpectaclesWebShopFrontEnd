@@ -21,6 +21,7 @@ import Product from "./Components/Pages/ProductPage/Product";
 import Search from "./Components/Pages/Search/Search";
 import Cart from "./Components/Pages/Cart/Cart";
 import WishList from "./Components/Pages/Wishlist/WishList";
+import OrderForm from "./Components/Pages/Order/OrderForm";
 
 function App() {
   const [{ token, user }, dispatch] = useDataLayerValue();
@@ -81,24 +82,11 @@ function App() {
       });
     }
   };
-  const LoadPricingData = async () => {
-    let response = await LoadPricingDetails();
-    if (response.status === 200) {
-      let result = await response.json();
-      dispatch({
-        type: actions.GLASSPRICING,
-        glassPricing: result.GlassPricing,
-      });
-      dispatch({
-        type: actions.TAXDETAILS,
-        taxDetails: result.taxDetails,
-      });
-    }
-  };
+
   useLayoutEffect(() => {
     fetchProductCategories();
     LoadData();
-    LoadPricingData();
+
     isUserLogin();
   }, []);
 
@@ -125,6 +113,7 @@ function App() {
           {token && (
             <Route exact path="/wishlist" element={<WishList />}></Route>
           )}
+          {token && <Route exact path="/order" element={<OrderForm />}></Route>}
           <Route path="/product/:id" element={<Product />}></Route>
           <Route path="/search/:product" element={<Search />}></Route>
           <Route

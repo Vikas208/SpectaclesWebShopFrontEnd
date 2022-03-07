@@ -11,7 +11,9 @@ function Main() {
     <div className="main">
       <ContactBar />
       <NavBar />
-      <Outlet />
+      <div style={{ minHeight: "50vh" }}>
+        <Outlet />
+      </div>
       <Footer />
     </div>
   );

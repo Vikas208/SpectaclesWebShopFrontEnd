@@ -8,21 +8,19 @@
   user-select: none;
 }
 
-._card form button {
+.cart_product_button {
   border: none;
   width: 200px;
-  padding: 10px 0px;
+  padding: 7px 0px;
   margin: 10px;
   /* background-color: rgb(243, 152, 33); */
   background-color: rgb(206, 69, 69);
+  /* background-color: black; */
   color: white;
-  border-radius: 2px;
+  border-radius: 5px;
   font-size: 1em;
-  border-top-left-radius: 50px;
-  border-bottom-right-radius: 50px;
   transition: all 100ms ease-in;
 }
-
 ._card form button:hover {
   background-color: transparent;
   color: black;
@@ -30,7 +28,7 @@
 
 .price {
   font-size: 22px;
-  color: brown;
+  color: rgb(0, 0, 0);
 }
 ._card > form > div {
   margin-top: 4px;
@@ -42,4 +40,13 @@
   box-shadow: rgba(0, 0, 0, 0.16) 0px 10px 36px 0px,
     rgba(0, 0, 0, 0.06) 0px 0px 0px 1px;
   transform: scale(1.02);
+}
+
+@media only screen and (max-width: 650px) {
+  .cart_window {
+    flex-direction: column;
+  }
+  .cart_products {
+    justify-content: center;
+  }
 }

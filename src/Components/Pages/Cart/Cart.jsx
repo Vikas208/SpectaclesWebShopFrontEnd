@@ -5,14 +5,16 @@ import CartProduct from "./CartProduct";
 import { deleteCartItem } from "../../../API/CustomerProduct";
 import "../../../Css/cartproduct.css";
 import { actions } from "../../../Reducer/action";
-import ProductPricing from "../../MainComponents/ProductPricing";
+import ProductPricing from "./ProductPricing";
+import "../../../Css/cartproduct.css";
 function Cart() {
   const [{ NumberOfCartProducts, user }, dispatch] = useDataLayerValue();
   const [{ limit, offset }, setValue] = useState({ limit: 5, offset: 0 });
-  const [product, setProducts] = useState(null);
+  const [product, setProducts] = useState([]);
   const [pages, setPages] = useState([]);
+
   const fetchProduct = async () => {
-    let response = await getCustomerCart(user?.id, offset);
+    let response = await getCustomerCart(user?.id, limit, offset);
     console.log(response);
     if (response.status === 200) {
       let result = await response.json();
@@ -32,6 +34,10 @@ function Cart() {
       dispatch({
         type: actions.SETCART,
         NumberOfCartProducts: NumberOfCartProducts - 1,
+      });
+      dispatch({
+        type: actions.RELOADCARTPRICING,
+        reloadCartPricing: true,
       });
     }
   };
@@ -57,10 +63,10 @@ function Cart() {
   return (
     <div className="cart ">
       <h1 className="text-center m-3">Your Cart</h1>
-      <div className="d-flex flex-wrap">
-        <div className="d-flex flex-column" style={{ flex: 0.7 }}>
-          <div className="d-flex flex-wrap m-3 align-items-center justify-content-center">
-            {product &&
+      <div className="d-flex flex-wrap justify-content-center cart_window  ">
+        <div className="d-flex flex-column cart_products" style={{ flex: 0.7 }}>
+          <div className="d-flex flex-wrap m-3 align-items-center ">
+            {product?.length !== 0 &&
               product.map((element, index) => {
                 return (
                   <div
@@ -85,6 +91,11 @@ function Cart() {
                   </div>
                 );
               })}
+            {product?.length === 0 && (
+              <small className="text-center w-100 " style={{ color: "red" }}>
+                No Items are there!
+              </small>
+            )}
           </div>
 
           {pages.length > 0 && (
@@ -151,8 +162,11 @@ function Cart() {
             </div>
           )}
         </div>
-        <div className="d-flex" style={{ flex: "0.3" }}>
-          <ProductPricing />
+        <div
+          className="d-flex container justify-content-center pricing_product"
+          style={{ flex: "0.3" }}
+        >
+          {product?.length !== 0 && <ProductPricing />}
         </div>
       </div>
     </div>

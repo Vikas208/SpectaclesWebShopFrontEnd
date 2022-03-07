@@ -23,15 +23,15 @@ function Sidebar() {
 
   const handelSubmit = (e) => {
     e.preventDefault();
-
-    if (group !== "^") {
+    if (group !== "^" && group !== undefined) {
       let arr = String(group).split("|");
       console.log(arr);
       for (let i = 0; i < arr.length; ++i) {
         document.getElementsByName(arr[i]).item(0).checked = true;
       }
     }
-    if (category !== "^") {
+
+    if (category !== "^" && category !== undefined) {
       let arr = String(category).split("|");
       console.log(arr);
       for (let i = 0; i < arr.length; ++i) {

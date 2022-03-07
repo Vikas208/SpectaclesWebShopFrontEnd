@@ -24,6 +24,7 @@
   box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px,
     rgba(27, 31, 35, 0.15) 0px 0px 0px 1px;
   position: relative;
+  user-select: none;
 }
 .phonenumber,
 .mailId {
@@ -46,6 +47,7 @@
 .navBar {
   display: flex;
   flex-direction: column;
+  user-select: none;
 }
 .uppermenu {
   border-bottom: 1px solid rgba(27, 31, 35, 0.15);
@@ -58,6 +60,7 @@
   width: 70px;
   height: 70px;
   margin-left: 10px;
+  user-select: none;
 }
 .upper_left > img {
   width: inherit;
@@ -70,6 +73,7 @@
   align-items: center;
   justify-content: center;
   margin-right: 7px;
+  user-select: none;
 }
 .upper_right > span {
   font-size: 28px;

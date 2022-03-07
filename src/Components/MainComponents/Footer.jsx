@@ -5,7 +5,7 @@ function Footer() {
   const [{ shopDetails }] = useDataLayerValue();
   return (
     <div
-      className="d-flex p-4 justify-content-between align-items-center flex-wrap bg-dark text-white "
+      className="d-flex p-4 justify-content-between align-items-center flex-wrap bg-dark text-white  "
       style={{ marginTop: "auto" }}
     >
       <fieldset className="flex-fill">
