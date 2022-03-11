@@ -2,11 +2,10 @@ import React, { useState, useLayoutEffect } from "react";
 import Carousel from "../../MainComponents/Carousel";
 import Products from "./Products";
 import { LoadCarousel } from "../../../API/LoadShopDetails";
-import { useDataLayerValue } from "../../../DataLayer";
-import ProductOrderPage from "../Order/ProductOrderPage";
+
 function Home() {
   const [carouselImages, setCarouselImages] = useState([{ images: "" }]);
-  const [{ showOrderProductDialog }] = useDataLayerValue();
+
   const loadCarousel = async () => {
     let response = await LoadCarousel();
     if (response.status === 200) {
@@ -20,7 +19,6 @@ function Home() {
   }, []);
   return (
     <div>
-      {showOrderProductDialog && <ProductOrderPage />}
       {carouselImages.length !== 0 && (
         <Carousel carouselImages={carouselImages} />
       )}

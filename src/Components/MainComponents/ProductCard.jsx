@@ -101,23 +101,26 @@ function ProductCard(props) {
           e.preventDefault();
           e.stopPropagation();
           e.nativeEvent.stopImmediatePropagation();
-          dispatch({
-            type: actions.ISCARTORDER,
-            isCartOrder: null,
-          });
-          dispatch({
-            type: actions.SETSHOPNOWPRODUCT,
-            shopNowProduct: props?.props?.id,
-          });
-          dispatch({
-            type: actions.SETSHOWORDERDIALOG,
-            showOrderProductDialog: true,
-          });
-          window.scrollTo({
-            top: 0,
-            behavior: "smooth",
-          });
-          console.log(window.scrollY);
+          if (token) {
+            dispatch({
+              type: actions.ISCARTORDER,
+              isCardOrder: null,
+            });
+            dispatch({
+              type: actions.SETSHOPNOWPRODUCT,
+              shopNowProduct: props?.props?.id,
+            });
+            dispatch({
+              type: actions.SETSHOWORDERDIALOG,
+              showOrderProductDialog: true,
+            });
+            window.scrollTo({
+              top: 0,
+              behavior: "smooth",
+            });
+          } else {
+            navigation("/login");
+          }
         }}
       >
         Shop now

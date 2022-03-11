@@ -11,7 +11,7 @@ import MyAccount from "./Components/Pages/Account/MyAccount";
 import Profile from "./Components/Pages/Account/Profile";
 import { useDataLayerValue } from "./DataLayer";
 import { useLayoutEffect } from "react";
-import { LoadShopDetails, LoadPricingDetails } from "./API/LoadShopDetails";
+import { LoadShopDetails, LoadGlassCharges } from "./API/LoadShopDetails";
 import { isUserLogined } from "./API/User";
 import { CountTotalCartProducts } from "./API/CustomerProduct";
 import { getData } from "./API/Product";
@@ -37,6 +37,15 @@ function App() {
         shopDetails: result,
       });
       document.title = result?.shopName;
+    }
+    response = await LoadGlassCharges();
+    if (response.status === 200) {
+      let result = await response.json();
+      console.log(result);
+      dispatch({
+        type: actions.GLASSTYPE,
+        glassTypeDetails: result,
+      });
     }
   };
   const isUserLogin = async () => {
@@ -86,7 +95,6 @@ function App() {
   useLayoutEffect(() => {
     fetchProductCategories();
     LoadData();
-
     isUserLogin();
   }, []);
 

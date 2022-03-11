@@ -4,6 +4,7 @@ import "../../../Css/OrderForm.css";
 import { useDataLayerValue } from "../../../DataLayer";
 import { actions } from "../../../Reducer/action";
 import { useNavigate } from "react-router-dom";
+import { getShowNowOrderProduct } from "../../../API/Product";
 function OrderForm() {
   const [{ user, isCardOrder, shopNowProduct }, dispatch] = useDataLayerValue();
   const [Pages, setPages] = useState({
@@ -209,12 +210,14 @@ function OrderForm() {
 export default OrderForm;
 
 function ProductInfoPage() {
-  const [{ user, isCardOrder, shopNowProduct }, dispatch] = useDataLayerValue();
+  const [{ user, isCardOrder, shopNowProduct, orderDetails }, dispatch] =
+    useDataLayerValue();
   const [products, setProducts] = useState([]);
   const [Pages, setPages] = useState({ info: true, payment: false });
   const [netPrice, setNetPrice] = useState(0);
   const navigation = useNavigate();
 
+  // cart products
   const fetchCartOrder = async () => {
     let response = await getAllOrderedCartProducts(user?.id);
     if (response.status === 200) {
@@ -226,6 +229,23 @@ function ProductInfoPage() {
         totalPrice += element?.TotalPrice;
       }
       setNetPrice(totalPrice);
+    }
+  };
+
+  // shop now product
+  const fetchProduct = async () => {
+    let { p_id, qty, glassType } = orderDetails?.orderProducts;
+    let response = await getShowNowOrderProduct(
+      p_id,
+      qty,
+      glassType === undefined ? "" : glassType
+    );
+    if (response.status === 200) {
+      let result = await response.json();
+      // setProducts(result);
+      console.log(result);
+      setProducts([result]);
+      setNetPrice(result?.TotalPrice);
     }
   };
   const handelClick = () => {
@@ -245,6 +265,7 @@ function ProductInfoPage() {
     if (user?.id != null && isCardOrder != null && Boolean(isCardOrder)) {
       fetchCartOrder();
     } else if (user?.id != null && shopNowProduct != null) {
+      fetchProduct();
     }
   }, [user?.id]);
 
@@ -265,7 +286,7 @@ function ProductInfoPage() {
               </thead>
               <tbody>
                 {products &&
-                  products.map((element, index) => {
+                  products?.map((element, index) => {
                     return (
                       <tr key={index}>
                         <td
@@ -276,8 +297,8 @@ function ProductInfoPage() {
                         >
                           {element.ProductName}
                         </td>
-                        <td>₹{element.GST}</td>
-                        <td>₹{element.OTHERTAX}</td>
+                        <td>{element.GST}%</td>
+                        <td>{element.OTHERTAX}%</td>
                         <td>₹{element.TotalPrice}</td>
                       </tr>
                     );

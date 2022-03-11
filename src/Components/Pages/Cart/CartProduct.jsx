@@ -10,23 +10,16 @@ function CartProduct(props) {
   const qty = useRef(1);
   const leftEye = useRef(0);
   const rightEye = useRef(0);
-  const glass = useRef(false);
-  const fiber = useRef(true);
   const onlyframe = useRef(false);
+  const [glassType, setGlassType] = useState("");
   const [hide, setHide] = useState(Boolean(props?.props?.onlyframe));
-  const [fiberCheck, setFiberCheck] = useState(false);
-  const [glassCheck, setGlassCheck] = useState(false);
-  const [{}, dispatch] = useDataLayerValue();
+  const [{ glassTypeDetails }, dispatch] = useDataLayerValue();
 
   const updateDetails = async () => {
     let data = {
       id: props?.props?.id,
       qty: Number(qty.current.value),
-      glassType: glass.current.checked
-        ? "Glass"
-        : fiber.current.checked
-        ? "Fiber"
-        : null,
+      glassType: glassType,
       onlyframe: onlyframe.current.checked,
       left_eye_no: Number(leftEye.current.value),
       right_eye_no: Number(rightEye.current.value),
@@ -41,12 +34,7 @@ function CartProduct(props) {
       });
     }
   };
-  useEffect(() => {
-    setFiberCheck(String(props?.props?.glassType).toLowerCase() === "fiber");
-    setGlassCheck(String(props?.props?.glassType).toLowerCase() === "glass");
-    // console.log(String(props?.props?.glassType).toLowerCase() === "fiber");
-    // console.log(fiberCheck + " " + glassCheck);
-  }, [props?.props?.glassType]);
+
   return (
     <div>
       <section style={{ maxHeight: "200px" }}>
@@ -131,48 +119,32 @@ function CartProduct(props) {
                 </div>
                 {String(
                   props?.props?.products?.productDescription?.p_category
-                ).toLowerCase() !== "lens".toLowerCase() && (
-                  <>
-                    <div>
-                      <label
-                        className="form-check-label"
-                        htmlFor="exampleRadios1"
-                      >
-                        Glass
-                      </label>
-                      <input
-                        className="form-check-input"
-                        type="radio"
-                        name="glassType"
-                        id="exampleRadios1"
-                        ref={glass.current.value}
-                        checked={glassCheck}
-                        onChange={() => {
-                          setGlassCheck(!glassCheck);
-                        }}
-                      />
-                    </div>
-                    <div>
-                      <label
-                        className="form-check-label"
-                        htmlFor="exampleRadios1"
-                      >
-                        Fiber Glass
-                      </label>
-                      <input
-                        className="form-check-input"
-                        type="radio"
-                        name="glassType"
-                        id="exampleRadios1"
-                        ref={fiber.current.value}
-                        checked={fiberCheck}
-                        onChange={() => {
-                          setFiberCheck(!fiberCheck);
-                        }}
-                      />
-                    </div>
-                  </>
-                )}
+                ).toLowerCase() !== "lens".toLowerCase() &&
+                  glassTypeDetails &&
+                  glassTypeDetails?.map((element) => {
+                    return (
+                      <div key={element?.id}>
+                        <label
+                          className="form-check-label"
+                          htmlFor="exampleRadios1"
+                        >
+                          {element?.glass_name}
+                        </label>
+                        <input
+                          className="form-check-input"
+                          type="radio"
+                          name="glassType"
+                          id="exampleRadios1"
+                          defaultChecked={
+                            props?.props?.glassType === element?.glass_name
+                          }
+                          onChange={() => {
+                            setGlassType(element?.glass_name);
+                          }}
+                        />
+                      </div>
+                    );
+                  })}
               </>
             )}
           </>

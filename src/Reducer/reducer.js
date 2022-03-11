@@ -37,10 +37,10 @@ const reducer = (state, action) => {
         ...state,
         NumberOfCartProducts: action.NumberOfCartProducts,
       };
-    case actions.SET_GLASSPRICING:
+    case actions.GLASSTYPE:
       return {
         ...state,
-        glassPricing: action.glassPricing,
+        glassTypeDetails: action.glassTypeDetails,
       };
     case actions.TAXDETAILS:
       return {

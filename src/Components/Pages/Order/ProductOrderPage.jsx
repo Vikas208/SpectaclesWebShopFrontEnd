@@ -2,14 +2,17 @@ import React, { useEffect, useRef, useState } from "react";
 import { useDataLayerValue } from "../../../DataLayer";
 import { getOrderedProductDetails } from "../../../API/Product";
 import { actions } from "../../../Reducer/action";
+import { useNavigate } from "react-router-dom";
 
 function ProductOrderPage() {
-  const [{ shopNowProduct }, dispatch] = useDataLayerValue();
+  const [{ shopNowProduct, glassTypeDetails }, dispatch] = useDataLayerValue();
   const [product, setProduct] = useState([]);
   const [hide, setHide] = useState(false);
+  const [glasssType, setGlassType] = useState("");
   const box = useRef(null);
+  const navigate = useNavigate();
 
-  const fetchOrderedProduct = async () => {
+  const fetchOrderedProductFromCart = async () => {
     let response = await getOrderedProductDetails(shopNowProduct);
     if (response.status === 200) {
       let result = await response.json();
@@ -26,10 +29,26 @@ function ProductOrderPage() {
     }
   });
 
-  console.log(product);
+  const handelOrder = (e) => {
+    e.preventDefault();
+    const formdata = new FormData(e.target);
+
+    let data = {};
+    data["p_id"] = shopNowProduct;
+    for (const [key, value] of formdata.entries()) {
+      data[key] = value;
+    }
+    data["glassType"] = glasssType;
+    dispatch({
+      type: actions.SETORDERPRODUCTS,
+      orderProducts: data,
+    });
+
+    navigate("/order");
+  };
   useEffect(() => {
     if (shopNowProduct != null) {
-      fetchOrderedProduct();
+      fetchOrderedProductFromCart();
     }
     return () => {
       setProduct([]);
@@ -46,7 +65,7 @@ function ProductOrderPage() {
         width: "350px",
         minHeight: "400px",
         position: "absolute",
-        zIndex: 2,
+        zIndex: 2000,
         backgroundColor: "white",
         top: 10,
         right: 0,
@@ -70,22 +89,16 @@ function ProductOrderPage() {
         </p>
       </section>
       <section>
-        <p className="price">
-          ₹
-          {(
-            product?.p_price -
-            product?.productSales?.saleOff -
-            (product?.p_price * product?.productSales?.salePercentage) / 100
-          ).toFixed(2)}
-        </p>
+        <p className="price">₹{product?.p_price?.toFixed(2)}</p>
       </section>
-      <form>
+      <form onSubmit={handelOrder}>
         <div className="input">
           <label>Qty</label>
           <input
             type="Number"
             className="form-control"
             min={1}
+            name="qty"
             defaultValue={1}
           />
         </div>
@@ -102,6 +115,7 @@ function ProductOrderPage() {
                   className="form-check-input"
                   type="checkbox"
                   id="defaultCheck1"
+                  name="onlyframe"
                   onChange={() => {
                     setHide((pre) => !pre);
                   }}
@@ -116,6 +130,7 @@ function ProductOrderPage() {
                   <input
                     type="Number"
                     className="form-control"
+                    name="left_eye_no"
                     defaultValue={0}
                   />
                 </div>
@@ -124,49 +139,44 @@ function ProductOrderPage() {
                   <input
                     type="Number"
                     className="form-control"
+                    name="right_eye_no"
                     defaultValue={0}
                   />
                 </div>
                 {String(
                   product?.productDescription?.p_category
-                ).toLowerCase() !== "lens".toLowerCase() && (
-                  <>
-                    <div>
-                      <label
-                        className="form-check-label"
-                        htmlFor="exampleRadios1"
-                      >
-                        Glass
-                      </label>
-                      <input
-                        className="form-check-input"
-                        type="radio"
-                        name="glassType"
-                        id="exampleRadios1"
-                      />
-                    </div>
-                    <div>
-                      <label
-                        className="form-check-label"
-                        htmlFor="exampleRadios1"
-                      >
-                        Fiber Glass
-                      </label>
-                      <input
-                        className="form-check-input"
-                        type="radio"
-                        name="glassType"
-                        id="exampleRadios1"
-                      />
-                    </div>
-                  </>
-                )}
+                ).toLowerCase() !== "lens".toLowerCase() &&
+                  glassTypeDetails &&
+                  glassTypeDetails?.map((element) => {
+                    return (
+                      <div key={element?.id}>
+                        <label
+                          className="form-check-label"
+                          htmlFor="exampleRadios1"
+                        >
+                          {element?.glass_name}
+                        </label>
+                        <input
+                          className="form-check-input"
+                          type="radio"
+                          name="glassType"
+                          id="exampleRadios1"
+                          onClick={() => {
+                            setGlassType(element?.glass_name);
+                          }}
+                        />
+                      </div>
+                    );
+                  })}
               </>
             )}
           </>
         )}
 
-        <button className="btn btn-dark mt-3 mb-3 align-self-end w-100">
+        <button
+          className="btn btn-dark mt-3 mb-3 align-self-end w-100"
+          type="submit"
+        >
           Next
         </button>
       </form>

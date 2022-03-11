@@ -16,6 +16,7 @@ import { saveToCart, saveToWishList } from "../../../API/CustomerProduct";
 import { useNavigate } from "react-router-dom";
 import { actions } from "../../../Reducer/action";
 import { toast } from "react-toastify";
+import ProductOrderPage from "../Order/ProductOrderPage";
 
 function Product() {
   const [reviews, setReviews] = useState([]);
@@ -184,7 +185,32 @@ function Product() {
                 <span className="material-icons">favorite_border</span>
                 <span>Add to WishList</span>
               </button>
-              <button className="btn_product">
+              <button
+                className="btn_product"
+                type="button"
+                onClick={(e) => {
+                  if (token) {
+                    dispatch({
+                      type: actions.ISCARTORDER,
+                      isCardOrder: null,
+                    });
+                    dispatch({
+                      type: actions.SETSHOPNOWPRODUCT,
+                      shopNowProduct: Number(id),
+                    });
+                    dispatch({
+                      type: actions.SETSHOWORDERDIALOG,
+                      showOrderProductDialog: true,
+                    });
+                    window.scrollTo({
+                      top: 0,
+                      behavior: "smooth",
+                    });
+                  } else {
+                    navigation("/login");
+                  }
+                }}
+              >
                 <span className="material-icons-sharp">shopping_bag</span>
                 <span>Shop now</span>
               </button>

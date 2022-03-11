@@ -188,3 +188,17 @@ export const getOrderedProductDetails = async (id) => {
   );
   return response;
 };
+
+export const getShowNowOrderProduct = async (p_id, qty, glassType) => {
+  let response = await fetch(
+    `/api/Order/getShopNowProduct?p_id=${p_id}&qty=${qty}&glassType=${glassType}`,
+    {
+      headers: {
+        Accept: "application/json",
+        "content-type": "application/json",
+      },
+      method: "GET",
+    }
+  );
+  return response;
+};
