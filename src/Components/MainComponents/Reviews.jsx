@@ -10,7 +10,7 @@ function Reviews({ review }) {
       <div className="user d-flex align-items-center">
         <span className="material-icons-outlined">account_circle</span>
 
-        <span>{review?.user === user.mailId ? "You" : review?.user}</span>
+        <span>{review?.user === user?.mailId ? "You" : review?.user}</span>
       </div>
       <div>
         {" "}

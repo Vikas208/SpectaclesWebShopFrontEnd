@@ -96,12 +96,16 @@ function ProductPricing() {
             <td>Other Tax</td>
             <td>₹{pricing[0]?.othertax}</td>
           </tr>
+          <tr>
+            <td>Total Glass Price</td>
+            <td>₹{pricing[0]?.glassPrice}</td>
+          </tr>
           {glassCharges &&
             glassCharges?.map((element, index) => {
               return (
                 <tr key={index}>
                   <td>{element?.glass_name}</td>
-                  <td>{element?.price}</td>
+                  <td>₹{element?.price}</td>
                 </tr>
               );
             })}

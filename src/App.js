@@ -22,6 +22,7 @@ import Search from "./Components/Pages/Search/Search";
 import Cart from "./Components/Pages/Cart/Cart";
 import WishList from "./Components/Pages/Wishlist/WishList";
 import OrderForm from "./Components/Pages/Order/OrderForm";
+import YourOrders from "./Components/Pages/Account/YourOrders";
 
 function App() {
   const [{ token, user }, dispatch] = useDataLayerValue();
@@ -116,6 +117,9 @@ function App() {
 
           {token && (
             <Route path="/myAccount/profile" element={<Profile />}></Route>
+          )}
+          {token && (
+            <Route path="/myAccount/orders" element={<YourOrders />}></Route>
           )}
           {token && <Route exact path="/cart" element={<Cart />}></Route>}
           {token && (

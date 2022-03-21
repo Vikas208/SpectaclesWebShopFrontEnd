@@ -70,6 +70,7 @@ function Forgot() {
     let data = {
       mailId: mail.current.value,
       password: password.current.value,
+      hasRole: "user",
     };
     let response = await ResetPassword(data);
     if (response.status !== 500) {

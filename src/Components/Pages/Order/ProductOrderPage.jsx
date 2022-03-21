@@ -3,11 +3,13 @@ import { useDataLayerValue } from "../../../DataLayer";
 import { getOrderedProductDetails } from "../../../API/Product";
 import { actions } from "../../../Reducer/action";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 function ProductOrderPage() {
   const [{ shopNowProduct, glassTypeDetails }, dispatch] = useDataLayerValue();
   const [product, setProduct] = useState([]);
   const [hide, setHide] = useState(false);
+  const [showError, setShowError] = useState(false);
   const [glasssType, setGlassType] = useState("");
   const box = useRef(null);
   const navigate = useNavigate();
@@ -31,6 +33,19 @@ function ProductOrderPage() {
 
   const handelOrder = (e) => {
     e.preventDefault();
+    let category = product?.productDescription?.p_category;
+    if (
+      hide === false &&
+      category.toLowerCase() !== "lens" &&
+      category.toLowerCase() !== "sun glass" &&
+      glasssType === ""
+    ) {
+      setShowError(true);
+      setTimeout(() => {
+        setShowError(false);
+      }, 4000);
+      return;
+    }
     const formdata = new FormData(e.target);
 
     let data = {};
@@ -39,6 +54,7 @@ function ProductOrderPage() {
       data[key] = value;
     }
     data["glassType"] = glasssType;
+
     dispatch({
       type: actions.SETORDERPRODUCTS,
       orderProducts: data,
@@ -74,6 +90,7 @@ function ProductOrderPage() {
           "rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px",
       }}
     >
+      {showError && <i style={{ color: "red" }}>Please Fill All Info</i>}
       <section>
         <img
           src={product?.bannerImage}
@@ -132,6 +149,7 @@ function ProductOrderPage() {
                     className="form-control"
                     name="left_eye_no"
                     defaultValue={0}
+                    step={0.01}
                   />
                 </div>
                 <div className="input">
@@ -141,6 +159,7 @@ function ProductOrderPage() {
                     className="form-control"
                     name="right_eye_no"
                     defaultValue={0}
+                    step={0.01}
                   />
                 </div>
                 {String(

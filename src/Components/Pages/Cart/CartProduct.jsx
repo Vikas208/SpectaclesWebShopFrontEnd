@@ -5,17 +5,34 @@ import { useNavigate } from "react-router-dom";
 import "../../../Css/cartproduct.css";
 import { useDataLayerValue } from "../../../DataLayer";
 import { actions } from "../../../Reducer/action";
+import { toast } from "react-toastify";
 function CartProduct(props) {
   const navigate = useNavigate();
   const qty = useRef(1);
   const leftEye = useRef(0);
   const rightEye = useRef(0);
   const onlyframe = useRef(false);
-  const [glassType, setGlassType] = useState("");
+  const [glassType, setGlassType] = useState(
+    props?.props?.glassType === undefined ? "" : props?.props?.glassType
+  );
   const [hide, setHide] = useState(Boolean(props?.props?.onlyframe));
   const [{ glassTypeDetails }, dispatch] = useDataLayerValue();
 
   const updateDetails = async () => {
+    let category = props?.props?.products?.productDescription?.p_category;
+    if (qty?.current?.value > props?.props?.products?.p_stock) {
+      toast.info("Require Quantity not Available at a time");
+      return;
+    } else if (
+      hide === false &&
+      String(category).toLowerCase() !== "sun glass" &&
+      String(category).toLowerCase() !== "lens" &&
+      glassType === ""
+    ) {
+      toast.info("please Select Glass Type");
+      return;
+    }
+
     let data = {
       id: props?.props?.id,
       qty: Number(qty.current.value),
@@ -106,6 +123,7 @@ function CartProduct(props) {
                     className="form-control"
                     defaultValue={props?.props?.left_eye_no}
                     ref={leftEye}
+                    step={0.01}
                   />
                 </div>
                 <div className="input">
@@ -115,6 +133,7 @@ function CartProduct(props) {
                     className="form-control"
                     defaultValue={props?.props?.right_eye_no}
                     ref={rightEye}
+                    step={0.01}
                   />
                 </div>
                 {String(

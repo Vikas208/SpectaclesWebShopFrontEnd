@@ -1,10 +1,21 @@
 import React, { useEffect, useState } from "react";
-import { getAllOrderedCartProducts } from "../../../API/Order";
+import {
+  addOrderAddress,
+  addOrderProducts,
+  addPaymentDetails,
+  cancleOrder,
+  createNewOrder,
+  getAllOrderedCartProducts,
+  sendInvoice,
+} from "../../../API/Order";
 import "../../../Css/OrderForm.css";
 import { useDataLayerValue } from "../../../DataLayer";
 import { actions } from "../../../Reducer/action";
 import { useNavigate } from "react-router-dom";
 import { getShowNowOrderProduct } from "../../../API/Product";
+
+import { toast } from "react-toastify";
+
 function OrderForm() {
   const [{ user, isCardOrder, shopNowProduct }, dispatch] = useDataLayerValue();
   const [Pages, setPages] = useState({
@@ -23,6 +34,7 @@ function OrderForm() {
     order_id: "",
   });
   const navigate = useNavigate();
+
   const handelSubmit = async (e) => {
     e.preventDefault();
     let formData = new FormData(e.target);
@@ -171,12 +183,11 @@ function OrderForm() {
               <div className="form-group col-md-2">
                 <label htmlFor="inputZip">PinCode</label>
                 <input
-                  type="Number"
+                  type="text"
                   className="form-control"
                   name="pincode"
                   id="inputZip"
-                  min="100000"
-                  max="999999"
+                  pattern="[0-9]{6}"
                   required
                   defaultValue={Data.pincode}
                 />
@@ -184,11 +195,10 @@ function OrderForm() {
               <div className="form-group col-md-2">
                 <label htmlFor="inputNumber">Phone Number</label>
                 <input
-                  type="Number"
+                  type="tel"
                   className="form-control"
                   name="phonenumber"
-                  min={1000000000}
-                  max={9999999999}
+                  pattern="[789][0-9]{9}"
                   required
                   defaultValue={Data.phonenumber}
                 />
@@ -226,7 +236,7 @@ function ProductInfoPage() {
       setProducts(result);
       let totalPrice = 0;
       for (let element of result) {
-        totalPrice += element?.TotalPrice;
+        totalPrice += element?.totalPrice;
       }
       setNetPrice(totalPrice);
     }
@@ -234,7 +244,8 @@ function ProductInfoPage() {
 
   // shop now product
   const fetchProduct = async () => {
-    let { p_id, qty, glassType } = orderDetails?.orderProducts;
+    let { p_id, qty, glassType, left_eye_no, right_eye_no, onlyframe } =
+      orderDetails?.orderProducts;
     let response = await getShowNowOrderProduct(
       p_id,
       qty,
@@ -244,8 +255,14 @@ function ProductInfoPage() {
       let result = await response.json();
       // setProducts(result);
       console.log(result);
+      // set Product Information
+      result.glassType = glassType;
+      result.left_eye_no = left_eye_no;
+      result.right_eye_no = right_eye_no;
+      result.onlyframe = onlyframe;
+
       setProducts([result]);
-      setNetPrice(result?.TotalPrice);
+      setNetPrice(result?.totalPrice);
     }
   };
   const handelClick = () => {
@@ -273,14 +290,18 @@ function ProductInfoPage() {
     <>
       {Pages.info && (
         <div className="container">
-          <h3>Your Order</h3>
+          <h3>Your Order</h3>₹
           <div className="products" style={{ maxWidth: "600px" }}>
             <table className="table" style={{ backgroundColor: "e7e5e5a1" }}>
               <thead>
                 <tr>
                   <td>Name</td>
+                  <td>Qty</td>
+                  <td>Price</td>
                   <td>Gst</td>
                   <td>Other Tax</td>
+                  <td>Sale</td>
+                  <td>GlassPrice</td>
                   <td>Total Price</td>
                 </tr>
               </thead>
@@ -292,21 +313,30 @@ function ProductInfoPage() {
                         <td
                           style={{ cursor: "pointer" }}
                           onClick={() => {
-                            navigation(`/product/${element?.ProductId}`);
+                            navigation(`/product/${element?.p_id}`);
                           }}
                         >
-                          {element.ProductName}
+                          {element?.p_name}
+                          <br />
+                          [GlassType: {element?.glassType} <br /> Left-Eye-No:
+                          {element?.left_eye_no} <br /> Right-Eye-No:{" "}
+                          {element?.right_eye_no} <br /> OnlyFrame:{" "}
+                          {element?.onlyframe ? "Yes" : "No"}]
                         </td>
-                        <td>{element.GST}%</td>
-                        <td>{element.OTHERTAX}%</td>
-                        <td>₹{element.TotalPrice}</td>
+                        <td>{element?.qty}</td>
+                        <td>₹{element?.p_price}</td>
+                        <td>₹{element?.gst?.toFixed(2)}</td>
+                        <td>₹{element?.otherTax?.toFixed(2)}</td>
+                        <td>₹{Number(element?.sale).toFixed(2)}</td>
+                        <td>₹{element?.glassPrice}</td>
+                        <td>₹{element.totalPrice?.toFixed(2)}</td>
                       </tr>
                     );
                   })}
 
                 <tr>
-                  <td colSpan={3}>Net Price</td>
-                  <td>₹{netPrice}</td>
+                  <td colSpan={7}>Net Price</td>
+                  <td>₹{netPrice.toFixed(2)}</td>
                 </tr>
               </tbody>
             </table>
@@ -328,14 +358,122 @@ function ProductInfoPage() {
 }
 
 function Payment({ totalPrice }) {
+  const [{ user, orderDetails }] = useDataLayerValue();
+  const [Loading, setLoading] = useState(false);
+  const [responseText, setResponseText] = useState(null);
+  const navigation = useNavigate();
+  const [error, setError] = useState(false);
+  const handleOrder = async () => {
+    if (
+      orderDetails?.orderPayment?.payment_type === undefined ||
+      orderDetails?.orderPayment?.payment_type === null
+    ) {
+      toast.info("Please Select Payment Method");
+      return 0;
+    }
+
+    setLoading(true);
+    const data = {
+      c_id: user?.id,
+    };
+    console.log(data);
+    // create Order
+    let response = await createNewOrder(data);
+    if (response.status === 200) {
+      let OrderId = await response.json();
+
+      orderDetails.orderAddress.order_id = OrderId;
+      console.log(orderDetails.orderAddress);
+      let Addressresponse = await addOrderAddress(orderDetails.orderAddress);
+
+      if (Addressresponse.status === 200) {
+        orderDetails.orderProducts.forEach((element) => {
+          element.order_id = OrderId;
+        });
+
+        let response = await addOrderProducts(orderDetails.orderProducts);
+        if (response.status === 200) {
+          orderDetails.orderPayment.total_amount = totalPrice;
+          orderDetails.orderPayment.order_id = OrderId;
+          let paymentresponse = await addPaymentDetails(
+            orderDetails.orderPayment
+          );
+          if (paymentresponse.status === 200) {
+            console.log(paymentresponse);
+
+            let isEmailSend = await sendInvoice(OrderId);
+
+            if (isEmailSend.status === 200) {
+              toast.success("Mail Send");
+            } else {
+              toast.error(
+                "Mail not Send But Order is placed you can check your order"
+              );
+            }
+            setResponseText("Order Placed");
+            setLoading(false);
+            setTimeout(() => {
+              navigation("/");
+            }, 4000);
+          } else {
+            let res = await cancleOrder(OrderId);
+            if (res.status === 200) {
+              setError(true);
+            }
+          }
+        } else {
+          let res = await cancleOrder(OrderId);
+          if (res.status === 200) {
+            setError(true);
+          }
+        }
+      }
+    } else {
+      setError(true);
+    }
+  };
+
+  useEffect(() => {
+    if (error) {
+      toast.error("Something is wrong");
+      setResponseText("Order Cancled");
+      setLoading(false);
+
+      setTimeout(() => {
+        navigation("/");
+      }, 4000);
+    }
+  }, [error]);
+
   return (
     <div className="container" style={{ userSelect: "none" }}>
+      <section
+        style={{
+          textAlign: "center",
+          display: "flex",
+          flexDirection: "column",
+          justifyContent: "center",
+          alignItems: "center",
+        }}
+      >
+        {Loading && (
+          <div
+            className="spinner-grow"
+            role="status"
+            style={{ width: "3rem", height: "3rem" }}
+          ></div>
+        )}
+        <i style={responseText ? { fontSize: "20px" } : { display: "none" }}>
+          {responseText}
+        </i>
+      </section>
+
       <fieldset>
         <legend>Payment Method</legend>
 
         <p style={{ fontSize: "18px" }}>
           <span className="me-1">Total Price</span>
-          <span className="me-1">₹{totalPrice}</span>
+          <span className="me-1">₹{Number(totalPrice).toFixed(2)}</span>
         </p>
         <div className="d-flex align-items-center">
           <Card
@@ -354,7 +492,9 @@ function Payment({ totalPrice }) {
           />
         </div>
       </fieldset>
-      <button className="btn btn-dark m-3">Place Order</button>
+      <button className="btn btn-dark m-3" onClick={handleOrder}>
+        Place Order
+      </button>
     </div>
   );
 }
@@ -368,9 +508,10 @@ function Card({ image, caption, paymentMethod }) {
         name="payment"
         style={{ width: "15px", height: "15px" }}
         onClick={() => {
+          let data = { payment_type: paymentMethod };
           dispatch({
             type: actions.SETORDERPAYMENT,
-            orderPayment: paymentMethod,
+            orderPayment: data,
           });
         }}
       />

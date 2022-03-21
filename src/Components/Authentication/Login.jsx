@@ -27,6 +27,7 @@ export default function Login() {
     let data = {
       mailId: String(mail.current.value).toLowerCase(),
       password: password.current.value,
+      hasRole: "user",
     };
     let response = await LoginUser(data);
     if (response.status !== 500) {

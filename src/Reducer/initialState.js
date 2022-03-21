@@ -31,5 +31,5 @@ export const initialState = {
   isCardOrder: null,
   shopNowProduct: null,
   showOrderProductDialog: false,
-  glassTypeDetails: {},
+  glassTypeDetails: [],
 };

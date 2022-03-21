@@ -67,6 +67,7 @@ function Profile() {
     let data = {
       mailId: user?.mailId,
       password: currentpassword.current.value,
+      hasRole: "user",
     };
     let response = await ValidateUser(data);
     if (response.status !== 500) {
@@ -76,6 +77,7 @@ function Profile() {
         let data = {
           mailId: user?.mailId,
           password: newpassword.current.value,
+          hasRole: "user",
         };
         let result = await ResetPassword(data);
         if (result.status !== 500) {

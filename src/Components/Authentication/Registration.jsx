@@ -71,6 +71,7 @@ export default function Register() {
           mailId: String(mail.current.value).toLowerCase(),
           name: name.current.value,
           password: password.current.value,
+          hasRole: "user",
         };
 
         let result = await SaveUser(user);
