@@ -103,3 +103,19 @@ export const getCustomerOrders = async (c_id) => {
   });
   return response;
 };
+
+export const validateProductData = async (p_id, qty, onlyframe, glassType) => {
+  let response = await fetch(
+    encodeURI(
+      `/api/Order/validateProductData?p_id=${p_id}&qty=${qty}&onlyframe=${onlyframe}&glassType=${glassType}`
+    ),
+    {
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      method: "GET",
+    }
+  );
+  return response;
+};

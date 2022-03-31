@@ -243,30 +243,20 @@ function Product() {
               </tr>
             </thead>
             <tbody className="table-light">
-              <tr>
-                <th scope="row">Company Name</th>
-                <td>{product?.productDescription?.company_name}</td>
-              </tr>
-              <tr>
-                <th scope="row">Categories</th>
-                <td>{product?.productDescription?.p_category}</td>
-              </tr>
-              <tr>
-                <th scope="row">Frame Style</th>
-                <td>{product?.productDescription?.p_frameStyle}</td>
-              </tr>
-              <tr>
-                <th scope="row">Group</th>
-                <td>{product?.productDescription?.p_group}</td>
-              </tr>
-              <tr>
-                <th scope="row">Frame Size</th>
-                <td>{product?.productDescription?.p_frameSize}</td>
-              </tr>
-              <tr>
-                <th scope="row">Color</th>
-                <td>{product?.productDescription?.color}</td>
-              </tr>
+              {typeof product?.productDescription === "object" &&
+                Object.keys(product?.productDescription).map(
+                  (element, index) => {
+                    if (element === "p_description") {
+                      return;
+                    }
+                    return (
+                      <tr key={index}>
+                        <th scope="col">{element}</th>
+                        <td>{product?.productDescription[element]}</td>
+                      </tr>
+                    );
+                  }
+                )}
             </tbody>
           </table>
         </div>

@@ -4,6 +4,7 @@ import { getOrderedProductDetails } from "../../../API/Product";
 import { actions } from "../../../Reducer/action";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import { validateProductData } from "../../../API/Order";
 
 function ProductOrderPage() {
   const [{ shopNowProduct, glassTypeDetails }, dispatch] = useDataLayerValue();
@@ -31,21 +32,9 @@ function ProductOrderPage() {
     }
   });
 
-  const handelOrder = (e) => {
+  const handelOrder = async (e) => {
     e.preventDefault();
-    let category = product?.productDescription?.p_category;
-    if (
-      hide === false &&
-      category.toLowerCase() !== "lens" &&
-      category.toLowerCase() !== "sun glass" &&
-      glasssType === ""
-    ) {
-      setShowError(true);
-      setTimeout(() => {
-        setShowError(false);
-      }, 4000);
-      return;
-    }
+
     const formdata = new FormData(e.target);
 
     let data = {};
@@ -55,12 +44,27 @@ function ProductOrderPage() {
     }
     data["glassType"] = glasssType;
 
-    dispatch({
-      type: actions.SETORDERPRODUCTS,
-      orderProducts: data,
-    });
+    console.log(data);
+    let response = await validateProductData(
+      data?.p_id,
+      data?.qty,
+      data?.onlyframe == undefined ? false : data?.onlyframe,
+      data?.glassType
+    );
+    if (response.status === 200) {
+      let result = await response.json();
+      console.log(result);
+      if (!result.success) {
+        toast.info(result?.message);
+      } else {
+        dispatch({
+          type: actions.SETORDERPRODUCTS,
+          orderProducts: data,
+        });
 
-    navigate("/order");
+        navigate("/order");
+      }
+    }
   };
   useEffect(() => {
     if (shopNowProduct != null) {
@@ -107,6 +111,9 @@ function ProductOrderPage() {
       </section>
       <section>
         <p className="price">₹{product?.p_price?.toFixed(2)}</p>
+      </section>
+      <section>
+        <small>Availble Product {product?.p_stock}</small>
       </section>
       <form onSubmit={handelOrder}>
         <div className="input">

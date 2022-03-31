@@ -128,3 +128,17 @@ export const getBillingPricing = async (c_id) => {
   });
   return respones;
 };
+
+export const validateCartProductData = async (c_id) => {
+  let response = await fetch(
+    encodeURI(`/api/Customer/validateProductData?userId=${c_id}`),
+    {
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      method: "GET",
+    }
+  );
+  return response;
+};

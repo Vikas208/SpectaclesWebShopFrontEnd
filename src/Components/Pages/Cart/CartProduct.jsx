@@ -11,44 +11,43 @@ function CartProduct(props) {
   const qty = useRef(1);
   const leftEye = useRef(0);
   const rightEye = useRef(0);
-  const onlyframe = useRef(false);
-  const [glassType, setGlassType] = useState(
-    props?.props?.glassType === undefined ? "" : props?.props?.glassType
-  );
+  const onlyframe = useRef(Boolean(props?.props?.onlyframe));
+  const [glassType, setGlassType] = useState("");
   const [hide, setHide] = useState(Boolean(props?.props?.onlyframe));
   const [{ glassTypeDetails }, dispatch] = useDataLayerValue();
 
   const updateDetails = async () => {
-    let category = props?.props?.products?.productDescription?.p_category;
-    if (qty?.current?.value > props?.props?.products?.p_stock) {
-      toast.info("Require Quantity not Available at a time");
-      return;
-    } else if (
-      hide === false &&
-      String(category).toLowerCase() !== "sun glass" &&
-      String(category).toLowerCase() !== "lens" &&
-      glassType === ""
-    ) {
-      toast.info("please Select Glass Type");
-      return;
+    let data = {};
+    if (Boolean(onlyframe.current.checked)) {
+      data = {
+        id: props?.props?.id,
+        qty: Number(qty.current.value),
+        glassType: null,
+        onlyframe: onlyframe.current.checked,
+      };
+    } else {
+      data = {
+        id: props?.props?.id,
+        qty: Number(qty.current.value),
+        glassType: glassType,
+        onlyframe: onlyframe.current.checked,
+        left_eye_no: Number(leftEye.current.value),
+        right_eye_no: Number(rightEye.current.value),
+      };
     }
-
-    let data = {
-      id: props?.props?.id,
-      qty: Number(qty.current.value),
-      glassType: glassType,
-      onlyframe: onlyframe.current.checked,
-      left_eye_no: Number(leftEye.current.value),
-      right_eye_no: Number(rightEye.current.value),
-    };
+    console.log(data);
     let response = await updateCartDetails(data);
     if (response.status === 200) {
       let result = await response.json();
       console.log(result);
-      dispatch({
-        type: actions.RELOADCARTPRICING,
-        reloadCartPricing: true,
-      });
+      if (result?.success) {
+        dispatch({
+          type: actions.RELOADCARTPRICING,
+          reloadCartPricing: true,
+        });
+      } else {
+        toast.info(result?.message);
+      }
     }
   };
 
@@ -79,6 +78,7 @@ function CartProduct(props) {
             100
         ).toFixed(2)}
       </p>
+      <small>Available Stock{props?.props?.products?.p_stock}</small>
       <form>
         <div className="input">
           <label>Qty</label>
@@ -104,7 +104,7 @@ function CartProduct(props) {
                 <input
                   className="form-check-input"
                   type="checkbox"
-                  defaultValue={props?.props?.onlyframe}
+                  defaultChecked={props?.props?.onlyframe}
                   id="defaultCheck1"
                   ref={onlyframe}
                   onChange={() => {

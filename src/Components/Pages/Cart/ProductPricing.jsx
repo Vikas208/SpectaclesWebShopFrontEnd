@@ -1,10 +1,14 @@
 import React, { useState } from "react";
 import { useEffect } from "react";
-import { getBillingPricing } from "../../../API/CustomerProduct";
+import {
+  getBillingPricing,
+  validateCartProductData,
+} from "../../../API/CustomerProduct";
 import { LoadGlassCharges } from "../../../API/LoadShopDetails";
 import { useDataLayerValue } from "../../../DataLayer";
 import { actions } from "../../../Reducer/action";
 import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 function ProductPricing() {
   const [isHidden, setIsHidden] = useState(false);
   const [{ user, reloadCartPricing, getCartOrderedProducts }, dispatch] =
@@ -23,6 +27,22 @@ function ProductPricing() {
     if (glassCharges.status === 200) {
       let result = await glassCharges.json();
       setGlassCharges(result);
+    }
+  };
+
+  const checkCartProductData = async () => {
+    let response = await validateCartProductData(user?.id);
+    if (response.status === 200) {
+      let result = await response.json();
+      if (!result.success) {
+        toast.info(result.message);
+      } else {
+        dispatch({
+          type: actions.ISCARTORDER,
+          isCardOrder: true,
+        });
+        navigation("/order");
+      }
     }
   };
 
@@ -90,7 +110,7 @@ function ProductPricing() {
           </tr>
           <tr>
             <td>Gst</td>
-            <td>₹{pricing[0]?.gst}</td>
+            <td>₹{Number(pricing[0]?.gst)?.toFixed(2)}</td>
           </tr>
           <tr>
             <td>Other Tax</td>
@@ -118,13 +138,7 @@ function ProductPricing() {
               <button
                 className="cart_product_button d-flex align-item-center justify-content-between pt-3 pb-3 ps-2 w-75"
                 style={{ backgroundColor: "black" }}
-                onClick={() => {
-                  dispatch({
-                    type: actions.ISCARTORDER,
-                    isCardOrder: true,
-                  });
-                  navigation("/order");
-                }}
+                onClick={checkCartProductData}
               >
                 Process to CheckOut
                 <span className="material-icons-outlined ms-2 me-2">

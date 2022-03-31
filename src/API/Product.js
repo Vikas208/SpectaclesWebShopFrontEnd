@@ -177,7 +177,7 @@ export const getData = async () => {
 
 export const getOrderedProductDetails = async (id) => {
   let response = await fetch(
-    `/api/products/getOrderedProductDetails?userId=${id}`,
+    `/api/products/getOrderedProductDetails?p_id=${id}`,
     {
       headers: {
         Accept: "application/json",
@@ -189,6 +189,8 @@ export const getOrderedProductDetails = async (id) => {
   return response;
 };
 
+
+// when we go for the order product
 export const getShowNowOrderProduct = async (p_id, qty, glassType) => {
   let response = await fetch(
     encodeURI(
