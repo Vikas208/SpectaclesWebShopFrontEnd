@@ -11,7 +11,7 @@ function Card({ image, text, onclicktext }) {
         navigation(onclicktext);
       }}
     >
-      <img src={image} alt="" />
+      {image && <img src={image} alt="" />}
       <span>{text}</span>
     </div>
   );

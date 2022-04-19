@@ -77,7 +77,7 @@ export const cancleOrder = async (orderId) => {
       Accept: "application/json",
       "Content-Type": "application/json",
     },
-    method: "DELETE",
+    method: "PUT",
   });
   return respones;
 };
@@ -101,6 +101,19 @@ export const getCustomerOrders = async (c_id) => {
     },
     method: "GET",
   });
+  return response;
+};
+export const getCustomerCancelOrders = async (c_id) => {
+  let response = await fetch(
+    `/api/Order/getCustomerCancelOrders?userId=${c_id}`,
+    {
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      method: "GET",
+    }
+  );
   return response;
 };
 

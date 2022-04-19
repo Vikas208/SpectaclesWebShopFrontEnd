@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../../../Css/Search.css";
 import { useDataLayerValue } from "../../../DataLayer";
 import { useNavigate, useParams } from "react-router-dom";
@@ -6,55 +6,104 @@ function Sidebar() {
   const [{ categories, frameStyles, companyNames }] = useDataLayerValue();
   const navigation = useNavigate();
   const { product } = useParams();
-  const { group } = useParams();
-  const { category } = useParams();
+  const { _group } = useParams();
+  const { _category } = useParams();
   const [price, setPrice] = useState({ start: 0, end: 0 });
-  const getFilterItems = (array) => {
-    let item = "";
-    //     console.log(array);
-    for (let i = 0; i < array?.length; ++i) {
-      let inputField = document.getElementsByName(array[i].data);
-      item += inputField.item(0).checked == true ? array[i].data + "|" : "";
-    }
-    item = item.length !== 0 ? item.substring(0, item.length - 1) : "^";
-    //     console.log(item);
-    return item;
-  };
+  const [_categories, setCategories] = useState([]);
+  const [_frameStyle, setFrameStyle] = useState([]);
+  const [_companyname, setCompanyname] = useState([]);
+  useEffect(() => {
+    let data = [];
+    categories &&
+      typeof categories === "object" &&
+      categories?.forEach((element, index) => {
+        data.push(element?.data);
+      });
+    setCategories(data);
+    data = [];
+    frameStyles &&
+      typeof frameStyles === "object" &&
+      frameStyles?.forEach((element, index) => {
+        data.push(element?.data);
+      });
+    setFrameStyle(data);
+    data = [];
+    companyNames &&
+      typeof companyNames === "object" &&
+      companyNames?.forEach((element, index) => {
+        data.push(element?.data);
+      });
+    setCompanyname(data);
+
+    return () => {
+      setCategories([]);
+      setFrameStyle([]);
+      setCompanyname([]);
+    };
+  }, [categories, frameStyles, companyNames]);
 
   const handelSubmit = (e) => {
     e.preventDefault();
-    if (group !== "^" && group !== undefined) {
-      let arr = String(group).split("|");
-      console.log(arr);
-      for (let i = 0; i < arr.length; ++i) {
-        document.getElementsByName(arr[i]).item(0).checked = true;
-      }
+    let formData = new FormData(e.target);
+    let arr = [];
+    for (let [key, value] of formData) {
+      // console.log(key + " : " + value);
+      arr.push(key);
     }
 
-    if (category !== "^" && category !== undefined) {
-      let arr = String(category).split("|");
-      console.log(arr);
-      for (let i = 0; i < arr.length; ++i) {
-        document.getElementsByName(arr[i]).item(0).checked = true;
+    let category = "^",
+      frameStyle = "^",
+      companyName = "^",
+      group = "^",
+      frameSize = "^";
+
+    console.log(arr);
+    console.log(_categories);
+    console.log(_frameStyle);
+    console.log(_companyname);
+
+    arr.forEach((element, index) => {
+      console.log(_categories.includes(element));
+      if (_categories.includes(element)) {
+        if (category === "^") {
+          category = element;
+        } else category += "|" + element;
       }
-    }
-    let _category = getFilterItems(categories);
+      if (_frameStyle.includes(element)) {
+        if (frameStyle === "^") {
+          frameStyle = element;
+        } else frameStyle += "|" + element;
+      }
+      if (_companyname.includes(element)) {
+        if (companyName === "^") {
+          companyName = element;
+        } else companyName += "|" + element;
+      }
+      if (["male", "female", "kids"].includes(element)) {
+        if (group === "^") {
+          group = element;
+        } else group += "|" + element;
+      }
+      if (["Large", "Medium", "Small"].includes(element)) {
+        if (frameSize === "^") {
+          frameSize = element;
+        } else frameSize += "|" + element;
+      }
+    });
 
-    let framestyle = getFilterItems(frameStyles);
-    let companyname = getFilterItems(companyNames);
-    let _group = getFilterItems([
-      { data: "male" },
-      { data: "female" },
-      { data: "kids" },
-    ]);
-    let frameSize = getFilterItems([
-      { data: "Large" },
-      { data: "Medium" },
-      { data: "Small" },
-    ]);
-
+    console.log(
+      category +
+        "\n" +
+        frameStyle +
+        "\n" +
+        companyName +
+        "\n" +
+        group +
+        "\n" +
+        frameSize
+    );
     navigation(
-      `/filterproducts/${product}/${_category}/${framestyle}/${companyname}/${_group}/${frameSize}/${price.start}/${price.end}`
+      `/filterproducts/${product}/${category}/${frameStyle}/${companyName}/${group}/${frameSize}/${price.start}/${price.end}`
     );
   };
   return (
@@ -62,6 +111,7 @@ function Sidebar() {
       <form onSubmit={handelSubmit}>
         <ul>
           <legend>Category</legend>
+
           {categories?.length !== 0 &&
             categories?.map((element, index) => {
               return (

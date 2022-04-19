@@ -64,7 +64,7 @@ export const isUserLogined = async () => {
 };
 
 export const Logout = async () => {
-  let response = await fetch("/api/user/logout", {
+  let response = await fetch("/api/user/logout?admin=false", {
     headers: {
       Accept: "application/json",
       "content-Type": "application/json",

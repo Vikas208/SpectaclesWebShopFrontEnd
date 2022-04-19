@@ -11,7 +11,7 @@ function WishListCard(props) {
   const navigate = useNavigate();
   const handelSaveToCart = async () => {
     let data = {
-      c_id: user?.id,
+      common_id: user?.id,
       p_id: props?.props?.p_id,
     };
     let response = await saveToCart(data);

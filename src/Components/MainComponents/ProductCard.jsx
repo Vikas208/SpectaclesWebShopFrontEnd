@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../../Css/ProductCard.css";
 import { useNavigate } from "react-router-dom";
 import { Rating } from "@mui/material";
@@ -12,6 +12,11 @@ function ProductCard(props) {
   const navigation = useNavigate();
   const [hide, setHide] = useState(false);
 
+  useEffect(() => {
+    return () => {
+      setHide(false);
+    };
+  }, []);
   const handelSaveToCart = async () => {
     let data = {
       common_id: user?.id,

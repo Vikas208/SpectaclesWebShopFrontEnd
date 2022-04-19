@@ -188,7 +188,11 @@ function NavBar() {
                   })}
 
                 <li className="nav-item">
-                  <a className="nav-link active" aria-current="page" href="/">
+                  <a
+                    className="nav-link active"
+                    aria-current="page"
+                    href="/guide"
+                  >
                     User Guide
                   </a>
                 </li>

@@ -22,7 +22,11 @@ import Search from "./Components/Pages/Search/Search";
 import Cart from "./Components/Pages/Cart/Cart";
 import WishList from "./Components/Pages/Wishlist/WishList";
 import OrderForm from "./Components/Pages/Order/OrderForm";
-import YourOrders from "./Components/Pages/Account/YourOrders";
+import YourOrders, {
+  CancelOrders,
+  Orders,
+} from "./Components/Pages/Account/YourOrders";
+import Guide from "./Components/MainComponents/Guide";
 
 function App() {
   const [{ token, user }, dispatch] = useDataLayerValue();
@@ -121,6 +125,18 @@ function App() {
           {token && (
             <Route path="/myAccount/orders" element={<YourOrders />}></Route>
           )}
+          {token && (
+            <Route
+              path="/myAccount/orders/Customerorders"
+              element={<Orders />}
+            ></Route>
+          )}
+          {token && (
+            <Route
+              path="/myAccount/orders/CustomerCancelorders"
+              element={<CancelOrders />}
+            ></Route>
+          )}
           {token && <Route exact path="/cart" element={<Cart />}></Route>}
           {token && (
             <Route exact path="/wishlist" element={<WishList />}></Route>
@@ -132,7 +148,9 @@ function App() {
             path="/filterproducts/:product/:category/:frameStyle/:companyName/:group/:framesize/:startingprice/:endingprice"
             element={<Search isFilter={true} />}
           ></Route>
+          <Route path="/guide" element={<Guide />}></Route>
         </Route>
+
         <Route
           path="*"
           element={

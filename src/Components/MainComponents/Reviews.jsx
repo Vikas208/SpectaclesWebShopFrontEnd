@@ -22,6 +22,7 @@ function Reviews({ review }) {
         />
       </div>
       <span>{review?.feedBack}</span>
+	  <span style={{alignSelf:"end",position:"absolute",bottom:"0",marginBottom:"5px",color:"gray",fontSize:"12px"}}>{(review?.time)}</span>
     </div>
   );
 }

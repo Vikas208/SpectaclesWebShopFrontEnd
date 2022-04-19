@@ -16,7 +16,6 @@ import { saveToCart, saveToWishList } from "../../../API/CustomerProduct";
 import { useNavigate } from "react-router-dom";
 import { actions } from "../../../Reducer/action";
 import { toast } from "react-toastify";
-import ProductOrderPage from "../Order/ProductOrderPage";
 
 function Product() {
   const [reviews, setReviews] = useState([]);
@@ -26,7 +25,7 @@ function Product() {
   const [{ token, user, NumberOfCartProducts }, dispatch] = useDataLayerValue();
   const navigation = useNavigate();
   const { id } = useParams();
-
+  console.log(id);
   async function fetchReviews() {
     let response = await fetchProductReviews(id);
     if (response.status === 200) {
@@ -124,30 +123,29 @@ function Product() {
                 ).toFixed(2)}
               </span>
 
-              {product?.productSales?.saleOff !== 0 ||
-                (product?.productSales?.salePercentage !== 0 && (
-                  <span
-                    style={{
-                      textDecoration: "line-through",
-                      fontSize: "18px",
-                      textDecorationThickness: "2px",
-                    }}
-                  >
-                    ₹{product?.p_price}
-                  </span>
-                ))}
-              {product?.productSales?.saleOff !== 0 ||
-                (product?.productSales?.salePercentage !== 0 && (
-                  <span style={{ fontSize: "20px" }}>
-                    Save ₹
-                    {(
-                      product?.productSales?.saleOff +
-                      (product?.p_price *
-                        product?.productSales?.salePercentage) /
-                        100
-                    ).toFixed(2)}
-                  </span>
-                ))}
+              {(product?.productSales?.saleOff !== 0 ||
+                product?.productSales?.salePercentage !== 0) && (
+                <span
+                  style={{
+                    textDecoration: "line-through",
+                    fontSize: "18px",
+                    textDecorationThickness: "2px",
+                  }}
+                >
+                  ₹{product?.p_price}
+                </span>
+              )}
+              {(product?.productSales?.saleOff !== 0 ||
+                product?.productSales?.salePercentage !== 0) && (
+                <span style={{ fontSize: "20px" }}>
+                  Save ₹
+                  {(
+                    product?.productSales?.saleOff +
+                    (product?.p_price * product?.productSales?.salePercentage) /
+                      100
+                  ).toFixed(2)}
+                </span>
+              )}
             </div>
 
             {product?.rating !== 0 && (
