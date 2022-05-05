@@ -35,11 +35,11 @@ function CartProduct(props) {
         right_eye_no: Number(rightEye.current.value),
       };
     }
-    console.log(data);
+    //console.log(data);
     let response = await updateCartDetails(data);
     if (response.status === 200) {
       let result = await response.json();
-      console.log(result);
+      //console.log(result);
       if (result?.success) {
         dispatch({
           type: actions.RELOADCARTPRICING,

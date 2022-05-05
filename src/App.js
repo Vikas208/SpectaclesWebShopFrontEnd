@@ -46,7 +46,7 @@ function App() {
     response = await LoadGlassCharges();
     if (response.status === 200) {
       let result = await response.json();
-      console.log(result);
+      //console.log(result);
       dispatch({
         type: actions.GLASSTYPE,
         glassTypeDetails: result,
@@ -57,7 +57,7 @@ function App() {
     let respones = await isUserLogined();
     if (respones.status === 200) {
       let result = await respones.json();
-      console.log(result);
+      //console.log(result);
       dispatch({
         type: actions.SET_TOKEN,
         token: result.token,

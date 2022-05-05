@@ -61,7 +61,7 @@ function OrderForm() {
     }
     if (user?.id != null) {
       let address = JSON.parse(sessionStorage.getItem("orderAddress"));
-      console.log(address);
+      //console.log(address);
       if (address != undefined || address != null) {
         for (let [key, value] of Object.entries(address)) {
           setData((pre) => ({
@@ -70,7 +70,7 @@ function OrderForm() {
           }));
         }
       }
-      console.log(Data);
+      //console.log(Data);
     }
 
     return () => {
@@ -232,7 +232,7 @@ function ProductInfoPage() {
     let response = await getAllOrderedCartProducts(user?.id);
     if (response.status === 200) {
       let result = await response.json();
-      // console.log(result);
+      // //console.log(result);
       setProducts(result);
       let totalPrice = 0;
       for (let element of result) {
@@ -254,7 +254,7 @@ function ProductInfoPage() {
     if (response.status === 200) {
       let result = await response.json();
       // setProducts(result);
-      console.log(result);
+      //console.log(result);
       // set Product Information
       result.glassType = glassType;
       result.left_eye_no = left_eye_no;
@@ -376,14 +376,14 @@ function Payment({ totalPrice }) {
     const data = {
       c_id: user?.id,
     };
-    console.log(data);
+    //console.log(data);
     // create Order
     let response = await createNewOrder(data);
     if (response.status === 200) {
       let OrderId = await response.json();
 
       orderDetails.orderAddress.order_id = OrderId;
-      console.log(orderDetails.orderAddress);
+      //console.log(orderDetails.orderAddress);
       let Addressresponse = await addOrderAddress(orderDetails.orderAddress);
 
       if (Addressresponse.status === 200) {
@@ -399,7 +399,7 @@ function Payment({ totalPrice }) {
             orderDetails.orderPayment
           );
           if (paymentresponse.status === 200) {
-            console.log(paymentresponse);
+            //console.log(paymentresponse);
 
             let isEmailSend = await sendInvoice(OrderId);
 

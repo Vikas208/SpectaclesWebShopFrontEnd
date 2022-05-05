@@ -47,7 +47,7 @@ function Sidebar() {
     let formData = new FormData(e.target);
     let arr = [];
     for (let [key, value] of formData) {
-      // console.log(key + " : " + value);
+      // //console.log(key + " : " + value);
       arr.push(key);
     }
 
@@ -57,13 +57,13 @@ function Sidebar() {
       group = "^",
       frameSize = "^";
 
-    console.log(arr);
-    console.log(_categories);
-    console.log(_frameStyle);
-    console.log(_companyname);
+    //console.log(arr);
+    //console.log(_categories);
+    //console.log(_frameStyle);
+    //console.log(_companyname);
 
     arr.forEach((element, index) => {
-      console.log(_categories.includes(element));
+      //console.log(_categories.includes(element));
       if (_categories.includes(element)) {
         if (category === "^") {
           category = element;
@@ -91,17 +91,17 @@ function Sidebar() {
       }
     });
 
-    console.log(
-      category +
-        "\n" +
-        frameStyle +
-        "\n" +
-        companyName +
-        "\n" +
-        group +
-        "\n" +
-        frameSize
-    );
+    //console.log(
+    //  category +
+    //    "\n" +
+    //   frameStyle +
+    //  "\n" +
+    //  companyName +
+    //  "\n" +
+    //  group +
+    //  "\n" +
+    //  frameSize
+    // );
     navigation(
       `/filterproducts/${product}/${category}/${frameStyle}/${companyName}/${group}/${frameSize}/${price.start}/${price.end}`
     );

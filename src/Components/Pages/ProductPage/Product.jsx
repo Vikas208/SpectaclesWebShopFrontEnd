@@ -25,7 +25,7 @@ function Product() {
   const [{ token, user, NumberOfCartProducts }, dispatch] = useDataLayerValue();
   const navigation = useNavigate();
   const { id } = useParams();
-  console.log(id);
+  //console.log(id);
   async function fetchReviews() {
     let response = await fetchProductReviews(id);
     if (response.status === 200) {
@@ -42,7 +42,7 @@ function Product() {
   }
   async function fetchProduct() {
     let response = await getProduct(id);
-    console.log(response);
+    //console.log(response);
     if (response.status === 200) {
       let result = await response.json();
 

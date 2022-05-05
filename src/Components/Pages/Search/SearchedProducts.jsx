@@ -42,7 +42,7 @@ function Searchedproducts({ isFilter = false }) {
     if (response.status === 200) {
       let result = await response.json();
       setLength(result);
-      console.log(result);
+      //console.log(result);
     }
   }
 
@@ -66,7 +66,7 @@ function Searchedproducts({ isFilter = false }) {
       setProducts(result);
     }
     setLoading(false);
-    console.log(response);
+    //console.log(response);
   }
 
   function pagination() {
@@ -76,12 +76,12 @@ function Searchedproducts({ isFilter = false }) {
     } else {
       pages = length / limit + (length % limit !== 0 ? 1 : 0);
     }
-    console.log(pages);
+    //console.log(pages);
     setPages(Array.from({ length: pages }, (n, i) => i + 1));
   }
 
   useLayoutEffect(() => {
-    // console.log("count");
+    // //console.log("count");
     CountTotalLength();
     pagination();
 
@@ -100,7 +100,7 @@ function Searchedproducts({ isFilter = false }) {
     endingprice,
   ]);
   useLayoutEffect(() => {
-    // console.log("product");
+    // //console.log("product");
     fetchProducts();
     return () => {
       setProducts([]);

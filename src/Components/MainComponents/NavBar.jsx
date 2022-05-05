@@ -81,7 +81,7 @@ function NavBar() {
                 dispatch({
                   type: actions.LOGOUT,
                 });
-                console.log(await Logout());
+                //console.log(await Logout());
               }}
             >
               logout

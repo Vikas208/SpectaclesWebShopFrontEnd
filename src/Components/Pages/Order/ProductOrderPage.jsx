@@ -44,7 +44,7 @@ function ProductOrderPage() {
     }
     data["glassType"] = glasssType;
 
-    console.log(data);
+    //console.log(data);
     let response = await validateProductData(
       data?.p_id,
       data?.qty,
@@ -53,7 +53,7 @@ function ProductOrderPage() {
     );
     if (response.status === 200) {
       let result = await response.json();
-      console.log(result);
+      //console.log(result);
       if (!result.success) {
         toast.info(result?.message);
       } else {

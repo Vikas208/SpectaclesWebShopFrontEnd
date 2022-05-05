@@ -23,7 +23,7 @@ function ProductCard(props) {
       p_id: props?.props?.id,
     };
     let response = await saveToCart(data);
-    console.log(response);
+    //console.log(response);
     if (response.status === 200) {
       // let result = await response.json();
       dispatch({
@@ -46,7 +46,7 @@ function ProductCard(props) {
     let response = await saveToWishList(data);
     if (response.status !== 200) {
       let result = await response.json();
-      console.log(result);
+      //console.log(result);
       toast.info(result.message);
     }
     if (response.status === 200) {

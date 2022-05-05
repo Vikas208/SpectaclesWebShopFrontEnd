@@ -15,7 +15,7 @@ function Cart() {
 
   const fetchProduct = async () => {
     let response = await getCustomerCart(user?.id, limit, offset);
-    console.log(response);
+    //console.log(response);
     if (response.status === 200) {
       let result = await response.json();
       setProducts(result);
@@ -26,7 +26,7 @@ function Cart() {
     let response = await deleteCartItem(id);
     if (response.status === 200) {
       let result = await response.json();
-      console.log(result);
+      //console.log(result);
       let updatedproducts = product.filter((element) => {
         return element?.id !== id;
       });

@@ -15,7 +15,7 @@ function WishListCard(props) {
       p_id: props?.props?.p_id,
     };
     let response = await saveToCart(data);
-    console.log(response);
+    //console.log(response);
     if (response.status === 200) {
       let result = await response.json();
       dispatch({

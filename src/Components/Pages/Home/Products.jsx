@@ -33,7 +33,7 @@ function Products() {
     const response = await fetchTotalNumberProducts();
     if (response.status === 200) {
       let count = await response.json();
-      console.log(count);
+      //console.log(count);
       setTotalProduct(count);
     }
   }
@@ -45,12 +45,12 @@ function Products() {
     } else {
       pages = totalProducts / 8 + (totalProducts % 8 !== 0 ? 1 : 0);
     }
-    // console.log(pages);
+    // //console.log(pages);
     setPages(Array.from({ length: pages }, (n, i) => i + 1));
   }
 
   useEffect(() => {
-    // console.log("fetch Products");
+    // //console.log("fetch Products");
     setLoading(true);
     fetchProducts(limit, offset);
     setLoading(false);
@@ -62,7 +62,7 @@ function Products() {
   }, [limit, offset]);
 
   useLayoutEffect(() => {
-    // console.log("Trending");
+    // //console.log("Trending");
     setLoading(true);
     fetchTrendProducts();
     fetchTotalNumberOfProducts();
@@ -76,7 +76,7 @@ function Products() {
   }, []);
 
   useEffect(() => {
-    // console.log("pagination");
+    // //console.log("pagination");
     Pagination();
     return () => {
       setPages(0);

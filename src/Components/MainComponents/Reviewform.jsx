@@ -22,7 +22,7 @@ function Reviewform({ p_id }) {
       rating: rating,
       feedBack: feedback.current.value,
     };
-    console.log(data);
+    //console.log(data);
     let response = await saveFeedback(data);
     if (response.status === 200) {
       let message = await response.json();

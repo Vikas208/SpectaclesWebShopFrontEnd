@@ -1,8 +1,8 @@
 import { actions } from "./action";
 
 const reducer = (state, action) => {
-  console.log(state);
-  console.log(action);
+  //console.log(state);
+  //console.log(action);
   switch (action.type) {
     case actions.SET_TOKEN:
       return {
